@@ -16,6 +16,7 @@ Different Validation tasks can be created by implementing the [`Validate`] trait
 These tasks will be stored into a [`Validations`] object which will write a report 
 into a Markdown File.
 
+[CHECK THE DOCS](https://simple-buildingsimulation.github.io/validate/validate/index.html)
 
 # Example 1: Built-in Time Series validator
 
