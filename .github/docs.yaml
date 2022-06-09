@@ -17,7 +17,7 @@ jobs:
       - name: Update
         run: rustup update 
       - name: Build doc
-        run: RUSTDOCFLAGS="--html-in-header katex.html" cargo doc --document-private-items --no-deps
+        run: cargo doc --document-private-items --no-deps
       - name: Set Index
         run: echo '<meta http-equiv=refresh content=0;url=validate/index.html>' > target/doc/index.html
       - name: Deploy

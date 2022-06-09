@@ -109,6 +109,8 @@ use std::{fs::File, io::Write};
 /// // an error and the unwrap woul
 /// validator.validate().unwrap();
 /// ```
+
+
 mod time_series;
 pub use time_series::SeriesValidator;
 
