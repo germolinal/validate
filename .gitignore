@@ -1,2 +1,4 @@
 /target
 /Cargo.lock
+report.md
+.DS_Store
