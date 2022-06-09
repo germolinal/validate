@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SeriesValidator","Validates a time series based on Mean Bias Error and Root Mean Squared Error"]]});
