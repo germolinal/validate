@@ -262,7 +262,7 @@ pub trait Validate {
 
 
 /// Reads a number of columns from a csv
-pub fn from_csv(path: &'static str, cols: &[usize])->Vec<Vec<f64>>{
+pub fn from_csv(path: & str, cols: &[usize])->Vec<Vec<f64>>{
     let reader = File::open(path).unwrap();
     let mut rdr = csv::Reader::from_reader(reader);        
     
