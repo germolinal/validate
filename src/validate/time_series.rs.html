@@ -118,6 +118,9 @@
 <span id="113">113</span>
 <span id="114">114</span>
 <span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -177,6 +180,9 @@ SOFTWARE.
     <span class="kw">pub</span> <span class="ident">found</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// the title of the chart</span>
+    <span class="kw">pub</span> <span class="ident">chart_title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+
+    <span class="doccomment">/// The title of the section in the Markdown</span>
     <span class="kw">pub</span> <span class="ident">title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
     
 }
@@ -223,9 +229,9 @@ SOFTWARE.
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">units</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">y_units</span>{
             <span class="ident">y_label</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} ({})&quot;</span>, <span class="ident">y_label</span>, <span class="ident">units</span>);
         }
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="macro">simple_fmt!</span>(<span class="ident">data</span>, <span class="self">self</span>.<span class="ident">title</span>, <span class="ident">x_label</span>, <span class="ident">y_label</span>);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="macro">simple_fmt!</span>(<span class="ident">data</span>, <span class="self">self</span>.<span class="ident">chart_title</span>, <span class="ident">x_label</span>, <span class="ident">y_label</span>);
 
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;# Title\n\n * Root Mean Squared Error: {:.2}\n * Mean Bias Error: {:.2}\n\n{}&quot;</span>, <span class="ident">root_mean_squared_error</span>, <span class="ident">mean_bias_error</span>, <span class="ident">poloto::disp</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">simple_theme</span>(<span class="ident">w</span>)));
+        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;# {}\n\n * Root Mean Squared Error: {:.2}\n * Mean Bias Error: {:.2}\n\n{}&quot;</span>, <span class="self">self</span>.<span class="ident">title</span>, <span class="ident">root_mean_squared_error</span>, <span class="ident">mean_bias_error</span>, <span class="ident">poloto::disp</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">simple_theme</span>(<span class="ident">w</span>)));
         <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">buf</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
         
 
