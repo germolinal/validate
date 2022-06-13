@@ -57,6 +57,9 @@ pub struct SeriesValidator {
     pub found: Vec<f64>,
 
     /// the title of the chart
+    pub chart_title: &'static str,
+
+    /// The title of the section in the Markdown
     pub title: &'static str,
     
 }
@@ -103,9 +106,9 @@ impl Validate for SeriesValidator{
         if let Some(units) = self.y_units{
             y_label = format!("{} ({})", y_label, units);
         }
-        let p = simple_fmt!(data, self.title, x_label, y_label);
+        let p = simple_fmt!(data, self.chart_title, x_label, y_label);
 
-        let buf = format!("# Title\n\n * Root Mean Squared Error: {:.2}\n * Mean Bias Error: {:.2}\n\n{}", root_mean_squared_error, mean_bias_error, poloto::disp(|w| p.simple_theme(w)));
+        let buf = format!("# {}\n\n * Root Mean Squared Error: {:.2}\n * Mean Bias Error: {:.2}\n\n{}", self.title, root_mean_squared_error, mean_bias_error, poloto::disp(|w| p.simple_theme(w)));
         file.write_all(buf.as_bytes()).unwrap();
         
 

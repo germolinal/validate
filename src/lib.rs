@@ -98,6 +98,7 @@ use std::{fs::File, io::Write};
 ///     x_label: Some("time step"),
 ///     y_label: Some("Zone Temperature"),
 ///     y_units: Some("C"),
+///     title: "Compare Series!",
 ///     expected,
 ///     found,
 ///     ..validate::SeriesValidator::default()

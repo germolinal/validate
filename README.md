@@ -36,6 +36,7 @@ let v = validate::SeriesValidator {
     x_label: Some("time step"),
     y_label: Some("Zone Temperature"),
     y_units: Some("C"),
+    title: "Compare Series!",
     expected,
     found,
     ..validate::SeriesValidator::default()
@@ -49,7 +50,7 @@ validator.validate().unwrap();
 ```
 This produces a result as follows
 
-## Title
+## Compare Series!
 
  * Root Mean Squared Error: 3.70
  * Mean Bias Error: -3.67
