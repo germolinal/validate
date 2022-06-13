@@ -579,7 +579,7 @@ SOFTWARE.
 
 
 <span class="doccomment">/// Reads a number of columns from a csv</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_csv</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">cols</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>])-&gt;<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>{
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_csv</span>(<span class="ident">path</span>: <span class="op">&amp;</span> <span class="ident">str</span>, <span class="ident">cols</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>])-&gt;<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>{
     <span class="kw">let</span> <span class="ident">reader</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="ident">path</span>).<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rdr</span> <span class="op">=</span> <span class="ident">csv::Reader::from_reader</span>(<span class="ident">reader</span>);        
     
