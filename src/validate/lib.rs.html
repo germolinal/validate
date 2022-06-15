@@ -307,15 +307,6 @@
 <span id="302">302</span>
 <span id="303">303</span>
 <span id="304">304</span>
-<span id="305">305</span>
-<span id="306">306</span>
-<span id="307">307</span>
-<span id="308">308</span>
-<span id="309">309</span>
-<span id="310">310</span>
-<span id="311">311</span>
-<span id="312">312</span>
-<span id="313">313</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -338,36 +329,35 @@ SOFTWARE.
 
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
 
-
 <span class="doccomment">//! This crate was developed with the intent of helping you to validate scientific</span>
 <span class="doccomment">//! tools; for exmple, for comparing the results of the temperature calculated</span>
 <span class="doccomment">//! by an algorithm and those measured in an experiment. It is supposed to be embedded</span>
 <span class="doccomment">//! the unit or integration testing.</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! Different Validation tasks can be created by implementing the [`Validate`] trait.  </span>
-<span class="doccomment">//! These tasks will be stored into a [`Validations`] object which will write a report </span>
+<span class="doccomment">//! These tasks will be stored into a [`Validations`] object which will write a report</span>
 <span class="doccomment">//! into a Markdown File.</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! # Example</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! use validate::{Validations, Validate};</span>
 <span class="doccomment">//! use std::{fs::File, io::Write};</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! // This checks that two numbers are equal</span>
 <span class="doccomment">//! struct CustomValidation {</span>
 <span class="doccomment">//!     expected: u8,</span>
 <span class="doccomment">//!     found: u8,</span>
 <span class="doccomment">//!     title: &amp;&#39;static str,</span>
 <span class="doccomment">//! }</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! impl Validate for CustomValidation {</span>
 <span class="doccomment">//!     fn validate(&amp;self, file: &amp;mut File)-&gt;Result&lt;(),String&gt;{</span>
 <span class="doccomment">//!         let valid = self.expected == self.found;</span>
 <span class="doccomment">//!         </span>
 <span class="doccomment">//!         </span>
 <span class="doccomment">//!         // We return an error if the validation is not succesful, but we still</span>
-<span class="doccomment">//!         // write something into the report. Even if this particular Validation </span>
+<span class="doccomment">//!         // write something into the report. Even if this particular Validation</span>
 <span class="doccomment">//!         // fails, the Validations object will run all the validations and print</span>
 <span class="doccomment">//!         // the error messages into the STDERR</span>
 <span class="doccomment">//!         let (ret, buf) = if valid {</span>
@@ -383,7 +373,7 @@ SOFTWARE.
 <span class="doccomment">//!         ret</span>
 <span class="doccomment">//!     }</span>
 <span class="doccomment">//! }</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! let v = CustomValidation{</span>
 <span class="doccomment">//!     expected: 2,</span>
 <span class="doccomment">//!     found: 2,</span>
@@ -392,24 +382,22 @@ SOFTWARE.
 <span class="doccomment">//! let mut validations = Validations::new(&quot;report.md&quot;, &quot;.&quot;);</span>
 <span class="doccomment">//! validations.push(Box::new(v));</span>
 <span class="doccomment">//! validations.validate().unwrap()</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-
 
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">fs::File</span>, <span class="ident">io::Write</span>};
 
-
-<span class="doccomment">/// A Validator that plots two time series and calculates—if required—the </span>
+<span class="doccomment">/// A Validator that plots two time series and calculates—if required—the</span>
 <span class="doccomment">/// Root Mean Squared Error and Mean Bias Error between them.</span>
-<span class="doccomment">/// </span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Example</span>
-<span class="doccomment">/// </span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use validate::{Validations, SeriesValidator};</span>
-<span class="doccomment">/// </span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// let expected = vec![1., 2., 3.];</span>
 <span class="doccomment">/// let found = vec![5., 6., 6.];</span>
-<span class="doccomment">/// </span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// let mut validator = Validations::new(&quot;report.md&quot;, &quot;.&quot;);    </span>
 <span class="doccomment">/// // Note that we are not defining a maximum allowed error</span>
 <span class="doccomment">/// let v = validate::SeriesValidator {</span>
@@ -423,20 +411,18 @@ SOFTWARE.
 <span class="doccomment">/// };</span>
 <span class="doccomment">/// validator.push(Box::new(v));</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // This will not fail because we did not set a maximum allowed </span>
-<span class="doccomment">/// // Root Mean Square Error or Mean Bias Error... if we did, it would return </span>
+<span class="doccomment">/// // This will not fail because we did not set a maximum allowed</span>
+<span class="doccomment">/// // Root Mean Square Error or Mean Bias Error... if we did, it would return</span>
 <span class="doccomment">/// // an error and the unwrap woul</span>
 <span class="doccomment">/// validator.validate().unwrap();</span>
 <span class="doccomment">/// ```</span>
-
-
 <span class="kw">mod</span> <span class="ident">time_series</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">time_series::SeriesValidator</span>;
 
 <span class="doccomment">/// Asserts whether two numbers are close enough</span>
-<span class="doccomment">/// by comparing the first argument with the second, and </span>
+<span class="doccomment">/// by comparing the first argument with the second, and</span>
 <span class="doccomment">/// the threshold being the third.</span>
-<span class="doccomment">/// </span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use validate::assert_close;</span>
@@ -449,8 +435,11 @@ SOFTWARE.
         <span class="kw">match</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">allowed_diff</span>) {
             (<span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">diff</span> <span class="op">=</span> (<span class="ident">left_val</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">right_val</span> <span class="kw">as</span> <span class="ident">f64</span>).<span class="ident">abs</span>();
-                <span class="kw">if</span> (<span class="ident">diff</span> <span class="op">&gt;</span> <span class="ident">allowed_diff</span>) {                                        
-                    <span class="macro">panic!</span>(<span class="string">&quot;{} and {} are not close enough (allowed difference was {}... found {})&quot;</span>, <span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>, <span class="ident">diff</span>);
+                <span class="kw">if</span> (<span class="ident">diff</span> <span class="op">&gt;</span> <span class="ident">allowed_diff</span>) {
+                    <span class="macro">panic!</span>(
+                        <span class="string">&quot;{} and {} are not close enough (allowed difference was {}... found {})&quot;</span>,
+                        <span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>, <span class="ident">diff</span>
+                    );
                 }
             }
         }
@@ -458,19 +447,21 @@ SOFTWARE.
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>:<span class="ident">expr</span> ) =&gt; {
         <span class="kw">match</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>) {
             (<span class="ident">left_val</span>, <span class="ident">right_val</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">allowed_diff</span> : <span class="ident">f64</span> <span class="op">=</span> <span class="number">1e-6</span>;
+                <span class="kw">let</span> <span class="ident">allowed_diff</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">1e-6</span>;
                 <span class="kw">let</span> <span class="ident">diff</span> <span class="op">=</span> (<span class="ident">left_val</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">right_val</span> <span class="kw">as</span> <span class="ident">f64</span>).<span class="ident">abs</span>();
-                <span class="kw">if</span> (<span class="ident">diff</span> <span class="op">&gt;</span> <span class="ident">allowed_diff</span>) {                                        
-                    <span class="macro">panic!</span>(<span class="string">&quot;{} and {} are not close enough (allowed difference was {}... found {})&quot;</span>, <span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>, <span class="ident">diff</span>);
+                <span class="kw">if</span> (<span class="ident">diff</span> <span class="op">&gt;</span> <span class="ident">allowed_diff</span>) {
+                    <span class="macro">panic!</span>(
+                        <span class="string">&quot;{} and {} are not close enough (allowed difference was {}... found {})&quot;</span>,
+                        <span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>, <span class="ident">diff</span>
+                    );
                 }
             }
         }
     };
 }
 
-
 <span class="doccomment">/// Asserts whether two numbers are close enough</span>
-<span class="doccomment">/// </span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// use validate::assert_not_close;</span>
@@ -483,8 +474,11 @@ SOFTWARE.
         <span class="kw">match</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">allowed_diff</span>) {
             (<span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">diff</span> <span class="op">=</span> (<span class="ident">left_val</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">right_val</span> <span class="kw">as</span> <span class="ident">f64</span>).<span class="ident">abs</span>();
-                <span class="kw">if</span> (<span class="ident">diff</span> <span class="op">&lt;</span> <span class="ident">allowed_diff</span>) {                                        
-                    <span class="macro">panic!</span>(<span class="string">&quot;{} and {} are too close (minimum difference was {}... found {})&quot;</span>, <span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>, <span class="ident">diff</span>);
+                <span class="kw">if</span> (<span class="ident">diff</span> <span class="op">&lt;</span> <span class="ident">allowed_diff</span>) {
+                    <span class="macro">panic!</span>(
+                        <span class="string">&quot;{} and {} are too close (minimum difference was {}... found {})&quot;</span>,
+                        <span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>, <span class="ident">diff</span>
+                    );
                 }
             }
         }
@@ -492,39 +486,37 @@ SOFTWARE.
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>:<span class="ident">expr</span> ) =&gt; {
         <span class="kw">match</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">left</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">right</span>) {
             (<span class="ident">left_val</span>, <span class="ident">right_val</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">allowed_diff</span> : <span class="ident">f64</span> <span class="op">=</span> <span class="number">1e-6</span>;
-                <span class="kw">let</span> <span class="ident">diff</span> <span class="op">=</span> (<span class="ident">left_val</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">right_val</span> <span class="kw">as</span> <span class="ident">f64</span>).<span class="ident">abs</span>();                
-                <span class="kw">if</span> (<span class="ident">diff</span> <span class="op">&lt;</span> <span class="ident">allowed_diff</span>) {                                        
-                    <span class="macro">panic!</span>(<span class="string">&quot;{} and {} are too close (minimum difference was {}... found {})&quot;</span>, <span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>, <span class="ident">diff</span>);
+                <span class="kw">let</span> <span class="ident">allowed_diff</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">1e-6</span>;
+                <span class="kw">let</span> <span class="ident">diff</span> <span class="op">=</span> (<span class="ident">left_val</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">right_val</span> <span class="kw">as</span> <span class="ident">f64</span>).<span class="ident">abs</span>();
+                <span class="kw">if</span> (<span class="ident">diff</span> <span class="op">&lt;</span> <span class="ident">allowed_diff</span>) {
+                    <span class="macro">panic!</span>(
+                        <span class="string">&quot;{} and {} are too close (minimum difference was {}... found {})&quot;</span>,
+                        <span class="ident">left_val</span>, <span class="ident">right_val</span>, <span class="ident">allowed_diff</span>, <span class="ident">diff</span>
+                    );
                 }
             }
         }
     };
 }
 
-
-
-<span class="doccomment">/// This structure holds the validations to be ran, runs them, </span>
+<span class="doccomment">/// This structure holds the validations to be ran, runs them,</span>
 <span class="doccomment">/// and writes the results into a Markdown report.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Validations</span> {
-    
     <span class="doccomment">/// The validations to run</span>
     <span class="ident">validations</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Validate</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The file in which the report will be written</span>
-    <span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, 
+    <span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
 
     <span class="doccomment">/// The location of the data that will be used by the report (e.g., images)</span>
     <span class="ident">report_data_dir</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Validations</span> {
-
-
-    <span class="doccomment">/// Creates a new `Validator` that will write a report on `target_file` and put the </span>
+    <span class="doccomment">/// Creates a new `Validator` that will write a report on `target_file` and put the</span>
     <span class="doccomment">/// supporting data on `report_data_dir`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">report_data_dir</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>) -&gt; <span class="self">Self</span> {        
-        <span class="self">Self</span>{
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">report_data_dir</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
             <span class="ident">validations</span>: <span class="ident">Vec::new</span>(),
             <span class="ident">target_file</span>,
             <span class="ident">report_data_dir</span>,
@@ -532,81 +524,72 @@ SOFTWARE.
     }
 
     <span class="doccomment">/// Adds a new validation to the `Validator`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">v</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Validate</span><span class="op">&gt;</span>){
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">v</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Validate</span><span class="op">&gt;</span>) {
         <span class="self">self</span>.<span class="ident">validations</span>.<span class="ident">push</span>(<span class="ident">v</span>)
     }
 
     <span class="doccomment">/// Given a filename thaat should be stored into as support data, this</span>
-    <span class="doccomment">/// function returns path to that file inside of the directory containing </span>
+    <span class="doccomment">/// function returns path to that file inside of the directory containing</span>
     <span class="doccomment">/// supporting data</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_support_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>)-&gt;<span class="ident">String</span>{
-        <span class="kw">return</span> <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.<span class="ident">report_data_dir</span>, <span class="ident">filename</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_support_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>) -&gt; <span class="ident">String</span> {
+        <span class="kw">return</span> <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.<span class="ident">report_data_dir</span>, <span class="ident">filename</span>);
     }
 
     <span class="doccomment">/// Runs the validations, writes the report and fails the task if necessary</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>)-&gt;<span class="prelude-ty">Result</span><span class="op">&lt;</span>(),<span class="ident">String</span><span class="op">&gt;</span>{
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">md</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="self">self</span>.<span class="ident">target_file</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">validations</span>.<span class="ident">iter</span>(){
+        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">validations</span>.<span class="ident">iter</span>() {
             <span class="ident">md</span>.<span class="ident">write_all</span>(<span class="string">b&quot;\n\n&quot;</span>).<span class="ident">unwrap</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">msg</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">validate</span>(<span class="kw-2">&amp;mut</span> <span class="ident">md</span>){
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">msg</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">validate</span>(<span class="kw-2">&amp;mut</span> <span class="ident">md</span>) {
                 <span class="ident">errors</span>.<span class="ident">push</span>(<span class="ident">msg</span>);
-            }            
+            }
         }
-        <span class="kw">if</span> <span class="ident">errors</span>.<span class="ident">is_empty</span>(){
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(())
-        }<span class="kw">else</span>{
-            <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">errors</span>{
-                <span class="macro">eprintln!</span>(<span class="string">&quot;{}&quot;</span>,<span class="ident">e</span>);                
+        <span class="kw">if</span> <span class="ident">errors</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+        } <span class="kw">else</span> {
+            <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">errors</span> {
+                <span class="macro">eprintln!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">e</span>);
             }
             <span class="prelude-val">Err</span>(<span class="string">&quot;Some validations failed...&quot;</span>.<span class="ident">to_string</span>())
-        }        
+        }
     }
 }
 
-
-<span class="doccomment">/// The main trait of this crate. All validator modules need </span>
+<span class="doccomment">/// The main trait of this crate. All validator modules need</span>
 <span class="doccomment">/// to comply with this trait.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Validate</span> {
-
-    <span class="doccomment">/// Runs a validation procedure, returning an error message if </span>
-    <span class="doccomment">/// the validation failed. </span>
-    <span class="doccomment">/// </span>
-    <span class="doccomment">/// Whether it fails or not, </span>
+    <span class="doccomment">/// Runs a validation procedure, returning an error message if</span>
+    <span class="doccomment">/// the validation failed.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Whether it fails or not,</span>
     <span class="doccomment">/// it should write the results of the validations into `file`</span>
     <span class="doccomment">/// so a full report is written.</span>
-    <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">file</span>: <span class="kw-2">&amp;mut</span> <span class="ident">File</span>)-&gt;<span class="prelude-ty">Result</span><span class="op">&lt;</span>(),<span class="ident">String</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">file</span>: <span class="kw-2">&amp;mut</span> <span class="ident">File</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span>;
 }
 
-
-
 <span class="doccomment">/// Reads a number of columns from a csv</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_csv</span>(<span class="ident">path</span>: <span class="op">&amp;</span> <span class="ident">str</span>, <span class="ident">cols</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>])-&gt;<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>{
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_csv</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">cols</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>]) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">reader</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="ident">path</span>).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rdr</span> <span class="op">=</span> <span class="ident">csv::Reader::from_reader</span>(<span class="ident">reader</span>);        
-    
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span> : <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">cols</span>.<span class="ident">len</span>());
-    <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="ident">cols</span>{
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rdr</span> <span class="op">=</span> <span class="ident">csv::Reader::from_reader</span>(<span class="ident">reader</span>);
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">cols</span>.<span class="ident">len</span>());
+    <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="ident">cols</span> {
         <span class="ident">ret</span>.<span class="ident">push</span>(<span class="ident">Vec::new</span>());
     }
 
-    <span class="kw">for</span> <span class="ident">record</span> <span class="kw">in</span> <span class="ident">rdr</span>.<span class="ident">records</span>(){
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">record</span>.<span class="ident">unwrap</span>();            
-        
-        <span class="kw">for</span> (<span class="ident">i</span>,<span class="ident">col</span>) <span class="kw">in</span> <span class="ident">cols</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>(){
+    <span class="kw">for</span> <span class="ident">record</span> <span class="kw">in</span> <span class="ident">rdr</span>.<span class="ident">records</span>() {
+        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">record</span>.<span class="ident">unwrap</span>();
+
+        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">col</span>) <span class="kw">in</span> <span class="ident">cols</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
             <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">data</span>[<span class="kw-2">*</span><span class="ident">col</span>].<span class="ident">trim</span>();
             <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>().<span class="ident">unwrap</span>();
             <span class="ident">ret</span>[<span class="ident">i</span>].<span class="ident">push</span>(<span class="ident">v</span>);
         }
-        
     }
 
     <span class="ident">ret</span>
 }
-
-
-
-
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
@@ -619,15 +602,14 @@ SOFTWARE.
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="attribute">#[<span class="ident">should_panic</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_assert_close_fail</span>() {
-        <span class="macro">assert_close!</span>(<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">0.2</span>);        
+        <span class="macro">assert_close!</span>(<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">0.2</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="attribute">#[<span class="ident">should_panic</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_assert_not_close_fail</span>(){
+    <span class="kw">fn</span> <span class="ident">test_assert_not_close_fail</span>() {
         <span class="macro">assert_not_close!</span>(<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">0.1</span>);
     }
-   
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="validate" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>

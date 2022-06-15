@@ -121,6 +121,50 @@
 <span id="116">116</span>
 <span id="117">117</span>
 <span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -141,41 +185,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */</span>
 
-<span class="kw">use</span> <span class="ident">poloto::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Validate</span>;
+<span class="kw">use</span> <span class="ident">poloto::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">fs::File</span>, <span class="ident">io::Write</span>};
 
 <span class="doccomment">/// Validates a time series based on Mean Bias Error and Root Mean Squared Error</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SeriesValidator</span> {
-    
     <span class="doccomment">/// The maximum allowed Mean Bias Error</span>
     <span class="kw">pub</span> <span class="ident">allowed_mean_bias_error</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    
+
     <span class="doccomment">/// The maximum allowed Root Mean Squared Error</span>
     <span class="kw">pub</span> <span class="ident">allowed_root_mean_squared_error</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    
+
     <span class="doccomment">/// The units in the y axis of the chart</span>
     <span class="kw">pub</span> <span class="ident">y_units</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
-    
+
     <span class="doccomment">/// The label in the y axis of the chart</span>
     <span class="kw">pub</span> <span class="ident">y_label</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
-    
+
     <span class="doccomment">/// The units in the x axis of the chart</span>
     <span class="kw">pub</span> <span class="ident">x_units</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
-    
+
     <span class="doccomment">/// The label in the x axis of the chart</span>
     <span class="kw">pub</span> <span class="ident">x_label</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The name of the series caled `expected`</span>
     <span class="kw">pub</span> <span class="ident">expected_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    
+
     <span class="doccomment">/// The time series containing the expected values</span>
     <span class="kw">pub</span> <span class="ident">expected</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The name of the `found` time series</span>
     <span class="kw">pub</span> <span class="ident">found_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    
+
     <span class="doccomment">/// The time series containing the found values</span>
     <span class="kw">pub</span> <span class="ident">found</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
 
@@ -184,59 +227,104 @@ SOFTWARE.
 
     <span class="doccomment">/// The title of the section in the Markdown</span>
     <span class="kw">pub</span> <span class="ident">title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    
 }
 
-<span class="kw">impl</span> <span class="ident">Validate</span> <span class="kw">for</span> <span class="ident">SeriesValidator</span>{
-    
-    <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">file</span>: <span class="kw-2">&amp;mut</span> <span class="ident">File</span>)-&gt;<span class="prelude-ty">Result</span><span class="op">&lt;</span>(),<span class="ident">String</span><span class="op">&gt;</span>{
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">found</span>.<span class="ident">len</span>(){
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Series to compare of equal length. expected.len() = {}, found.len() = {}&quot;</span>, <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">len</span>(), <span class="self">self</span>.<span class="ident">found</span>.<span class="ident">len</span>()));
+<span class="kw">impl</span> <span class="ident">Validate</span> <span class="kw">for</span> <span class="ident">SeriesValidator</span> {
+    <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">file</span>: <span class="kw-2">&amp;mut</span> <span class="ident">File</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err_msg</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>();
+        
+        
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">found</span>.<span class="ident">len</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+                <span class="string">&quot;Series to compare of equal length. expected.len() = {}, found.len() = {}&quot;</span>,
+                <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">len</span>(),
+                <span class="self">self</span>.<span class="ident">found</span>.<span class="ident">len</span>()
+            ));
         }
         <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">f64</span>;
         <span class="kw">let</span> <span class="ident">num</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="ident">bias_error</span> : <span class="ident">f64</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">found</span>.<span class="ident">iter</span>()).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>,<span class="ident">y</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">y</span> <span class="op">-</span> <span class="kw-2">*</span><span class="ident">x</span>).<span class="ident">sum</span>();
-        <span class="kw">let</span> <span class="ident">mean_bias_error</span> <span class="op">=</span> <span class="ident">bias_error</span><span class="op">/</span><span class="ident">n</span>;
-        <span class="kw">let</span> <span class="ident">squared_error</span> : <span class="ident">f64</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">found</span>.<span class="ident">iter</span>()).<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>, <span class="ident">y</span>)<span class="op">|</span> (<span class="kw-2">*</span><span class="ident">y</span> <span class="op">-</span> <span class="kw-2">*</span><span class="ident">x</span>).<span class="ident">powi</span>(<span class="number">2</span>)).<span class="ident">sum</span>();
+        <span class="comment">// Process Mean Bias Error</span>
+        <span class="kw">let</span> <span class="ident">bias_error</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="self">self</span>
+        .<span class="ident">expected</span>
+        .<span class="ident">iter</span>()
+        .<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">found</span>.<span class="ident">iter</span>())
+        .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>, <span class="ident">y</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">y</span> <span class="op">-</span> <span class="kw-2">*</span><span class="ident">x</span>)
+        .<span class="ident">sum</span>();
+        <span class="kw">let</span> <span class="ident">mean_bias_error</span> <span class="op">=</span> <span class="ident">bias_error</span> <span class="op">/</span> <span class="ident">n</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mbe_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;Root Mean Squared Error: {:.2}&quot;</span>, <span class="ident">mean_bias_error</span>);
+
+        <span class="comment">// Process Root Mean Squared Error</span>
+        <span class="kw">let</span> <span class="ident">squared_error</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">expected</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">zip</span>(<span class="self">self</span>.<span class="ident">found</span>.<span class="ident">iter</span>())
+            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>, <span class="ident">y</span>)<span class="op">|</span> (<span class="kw-2">*</span><span class="ident">y</span> <span class="op">-</span> <span class="kw-2">*</span><span class="ident">x</span>).<span class="ident">powi</span>(<span class="number">2</span>))
+            .<span class="ident">sum</span>();
         <span class="kw">let</span> <span class="ident">root_mean_squared_error</span> <span class="op">=</span> (<span class="ident">squared_error</span> <span class="op">/</span> <span class="ident">n</span>).<span class="ident">sqrt</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">allowed_mean_bias_error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">allowed_mean_bias_error</span>{
-            <span class="kw">if</span> <span class="ident">mean_bias_error</span> <span class="op">&gt;</span> <span class="ident">allowed_mean_bias_error</span>{
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Mean Bias Error is {}, which is greater than the allowed value of {}&quot;</span>, <span class="ident">mean_bias_error</span>, <span class="ident">allowed_mean_bias_error</span>))
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmse_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;* Mean Bias Error: {:.2}&quot;</span>, <span class="ident">root_mean_squared_error</span>);
+
+        <span class="comment">// Check compliance</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">allowed_mean_bias_error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">allowed_mean_bias_error</span> {
+            <span class="kw">if</span> <span class="ident">mean_bias_error</span>.<span class="ident">abs</span>() <span class="op">&gt;</span> <span class="ident">allowed_mean_bias_error</span> {
+                <span class="ident">err_msg</span> <span class="op">=</span> <span class="macro">format!</span>(
+                    <span class="string">&quot;{}\nAt {}: Mean Bias Error is {}, which is greater than the allowed value of {}&quot;</span>,
+                    <span class="ident">err_msg</span>, <span class="self">self</span>.<span class="ident">title</span>, <span class="ident">mean_bias_error</span>, <span class="ident">allowed_mean_bias_error</span>
+                );
+                <span class="ident">mbe_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} | **Failed!**&quot;</span>, <span class="ident">mbe_msg</span>)
             }
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">allowed_root_mean_squared_error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">allowed_root_mean_squared_error</span>{
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">allowed_root_mean_squared_error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">allowed_root_mean_squared_error</span> {
             <span class="kw">if</span> <span class="ident">root_mean_squared_error</span> <span class="op">&gt;</span> <span class="ident">allowed_root_mean_squared_error</span> {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Mean Root Squared Error is {}, which is greater than the allowed value of {}&quot;</span>, <span class="ident">root_mean_squared_error</span>, <span class="ident">allowed_root_mean_squared_error</span>))
+                <span class="ident">err_msg</span> <span class="op">=</span> <span class="macro">format!</span>(
+                    <span class="string">&quot;{}\nAt {}: Mean Root Squared Error is {}, which is greater than the allowed value of {}&quot;</span>,
+                    <span class="ident">err_msg</span>, <span class="self">self</span>.<span class="ident">title</span>, <span class="ident">root_mean_squared_error</span>, <span class="ident">allowed_root_mean_squared_error</span>
+                );
+                <span class="ident">rmse_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} | **Failed!**&quot;</span>, <span class="ident">rmse_msg</span>)
             }
         }
 
-        <span class="kw">let</span> <span class="ident">line_expected</span> <span class="op">=</span> <span class="ident">poloto::build::line</span>(<span class="self">self</span>.<span class="ident">expected_name</span>, <span class="ident">poloto::range_iter</span>([<span class="number">0.0</span>, <span class="ident">n</span>], <span class="ident">num</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> [<span class="ident">i</span>, <span class="self">self</span>.<span class="ident">expected</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>] ]));
-        <span class="kw">let</span> <span class="ident">line_found</span> <span class="op">=</span>    <span class="ident">poloto::build::line</span>(<span class="self">self</span>.<span class="ident">found_name</span>,    <span class="ident">poloto::range_iter</span>([<span class="number">0.0</span>, <span class="ident">n</span>], <span class="ident">num</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> [<span class="ident">i</span>, <span class="self">self</span>.<span class="ident">found</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>] ]));
+        <span class="kw">let</span> <span class="ident">line_expected</span> <span class="op">=</span> <span class="ident">poloto::build::line</span>(
+            <span class="self">self</span>.<span class="ident">expected_name</span>,
+            <span class="ident">poloto::range_iter</span>([<span class="number">0.0</span>, <span class="ident">n</span>], <span class="ident">num</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> [<span class="ident">i</span>, <span class="self">self</span>.<span class="ident">expected</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>]]),
+        );
+        <span class="kw">let</span> <span class="ident">line_found</span> <span class="op">=</span> <span class="ident">poloto::build::line</span>(
+            <span class="self">self</span>.<span class="ident">found_name</span>,
+            <span class="ident">poloto::range_iter</span>([<span class="number">0.0</span>, <span class="ident">n</span>], <span class="ident">num</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> [<span class="ident">i</span>, <span class="self">self</span>.<span class="ident">found</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>]]),
+        );
         <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">poloto::build::origin</span>();
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="macro">plots!</span>(<span class="ident">line_expected</span>, <span class="ident">line_found</span>, <span class="ident">m</span>);
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x_label</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">x_label</span>{
-            <span class="prelude-val">Some</span>(<span class="ident">v</span>)=&gt;<span class="ident">v</span>.<span class="ident">to_string</span>(),
-            <span class="prelude-val">None</span>=&gt;<span class="string">&quot;x&quot;</span>.<span class="ident">to_string</span>()
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x_label</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">x_label</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">to_string</span>(),
+            <span class="prelude-val">None</span> =&gt; <span class="string">&quot;x&quot;</span>.<span class="ident">to_string</span>(),
         };
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">units</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">x_units</span>{
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">units</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">x_units</span> {
             <span class="ident">x_label</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} ({})&quot;</span>, <span class="ident">x_label</span>, <span class="ident">units</span>);
         }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">y_label</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">y_label</span>{
-            <span class="prelude-val">Some</span>(<span class="ident">v</span>)=&gt;<span class="ident">v</span>.<span class="ident">to_string</span>(),
-            <span class="prelude-val">None</span>=&gt;<span class="string">&quot;y&quot;</span>.<span class="ident">to_string</span>()
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">y_label</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">y_label</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">to_string</span>(),
+            <span class="prelude-val">None</span> =&gt; <span class="string">&quot;y&quot;</span>.<span class="ident">to_string</span>(),
         };
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">units</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">y_units</span>{
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">units</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">y_units</span> {
             <span class="ident">y_label</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} ({})&quot;</span>, <span class="ident">y_label</span>, <span class="ident">units</span>);
         }
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="macro">simple_fmt!</span>(<span class="ident">data</span>, <span class="self">self</span>.<span class="ident">chart_title</span>, <span class="ident">x_label</span>, <span class="ident">y_label</span>);
 
-        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;# {}\n\n * Root Mean Squared Error: {:.2}\n * Mean Bias Error: {:.2}\n\n{}&quot;</span>, <span class="self">self</span>.<span class="ident">title</span>, <span class="ident">root_mean_squared_error</span>, <span class="ident">mean_bias_error</span>, <span class="ident">poloto::disp</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">simple_theme</span>(<span class="ident">w</span>)));
+        <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">format!</span>(
+            <span class="string">&quot;# {}\n\n * {}\n {}\n\n{}&quot;</span>,
+            <span class="self">self</span>.<span class="ident">title</span>,
+            <span class="ident">rmse_msg</span>,
+            <span class="ident">mbe_msg</span>,
+            <span class="ident">poloto::disp</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">simple_theme</span>(<span class="ident">w</span>))
+        );
         <span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">buf</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
-        
 
-        <span class="prelude-val">Ok</span>(())
-
+        <span class="kw">if</span> <span class="ident">err_msg</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
+            <span class="prelude-val">Err</span>(<span class="ident">err_msg</span>)
+        }<span class="kw">else</span>{
+            <span class="prelude-val">Ok</span>(())
+        }
     }
 }
 </code></pre></div>

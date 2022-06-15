@@ -4,31 +4,31 @@
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../validate/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
         </a><h2 class="location"><a href="#">Crate validate</a></h2><div class="sidebar-elems"><div class="block"><ul><li class="version">Version 0.1.0</li><li><a id="all-types" href="all.html">All Items</a></li></div></ul><section><div class="block"><ul><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div></section><div id="sidebar-vars" data-name="validate" data-ty="mod" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../validate/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
-    <h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">validate</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/validate/lib.rs.html#21-313">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This crate was developed with the intent of helping you to validate scientific
+    <h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">validate</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/validate/lib.rs.html#21-304">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This crate was developed with the intent of helping you to validate scientific
 tools; for exmple, for comparing the results of the temperature calculated
 by an algorithm and those measured in an experiment. It is supposed to be embedded
 the unit or integration testing.</p>
 <p>Different Validation tasks can be created by implementing the <a href="trait.Validate.html" title="Validate"><code>Validate</code></a> trait.<br />
-These tasks will be stored into a <a href="struct.Validations.html" title="Validations"><code>Validations</code></a> object which will write a report 
+These tasks will be stored into a <a href="struct.Validations.html" title="Validations"><code>Validations</code></a> object which will write a report
 into a Markdown File.</p>
 <h2 id="example"><a href="#example">Example</a></h2>
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">validate</span>::{<span class="ident">Validations</span>, <span class="ident">Validate</span>};
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">fs::File</span>, <span class="ident">io::Write</span>};
- 
+
 <span class="comment">// This checks that two numbers are equal</span>
 <span class="kw">struct</span> <span class="ident">CustomValidation</span> {
     <span class="ident">expected</span>: <span class="ident">u8</span>,
     <span class="ident">found</span>: <span class="ident">u8</span>,
     <span class="ident">title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
 }
- 
+
 <span class="kw">impl</span> <span class="ident">Validate</span> <span class="kw">for</span> <span class="ident">CustomValidation</span> {
     <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">file</span>: <span class="kw-2">&amp;mut</span> <span class="ident">File</span>)-&gt;<span class="prelude-ty">Result</span><span class="op">&lt;</span>(),<span class="ident">String</span><span class="op">&gt;</span>{
         <span class="kw">let</span> <span class="ident">valid</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">expected</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">found</span>;
          
          
         <span class="comment">// We return an error if the validation is not succesful, but we still</span>
-        <span class="comment">// write something into the report. Even if this particular Validation </span>
+        <span class="comment">// write something into the report. Even if this particular Validation</span>
         <span class="comment">// fails, the Validations object will run all the validations and print</span>
         <span class="comment">// the error messages into the STDERR</span>
         <span class="kw">let</span> (<span class="ident">ret</span>, <span class="ident">buf</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">valid</span> {
@@ -44,7 +44,7 @@ into a Markdown File.</p>
         <span class="ident">ret</span>
     }
 }
- 
+
 <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">CustomValidation</span>{
     <span class="ident">expected</span>: <span class="number">2</span>,
     <span class="ident">found</span>: <span class="number">2</span>,
@@ -53,21 +53,21 @@ into a Markdown File.</p>
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">validations</span> <span class="op">=</span> <span class="ident">Validations::new</span>(<span class="string">&quot;report.md&quot;</span>, <span class="string">&quot;.&quot;</span>);
 <span class="ident">validations</span>.<span class="ident">push</span>(<span class="ident">Box::new</span>(<span class="ident">v</span>));
 <span class="ident">validations</span>.<span class="ident">validate</span>().<span class="ident">unwrap</span>()
- </code></pre></div>
+</code></pre></div>
 </div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="time_series/index.html" title="validate::time_series mod">time_series</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="item-right docblock-short"><p>A Validator that plots two time series and calculates—if required—the 
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="time_series/index.html" title="validate::time_series mod">time_series</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="item-right docblock-short"><p>A Validator that plots two time series and calculates—if required—the
 Root Mean Squared Error and Mean Bias Error between them.</p>
 </div></div></div><h2 id="macros" class="small-section-header"><a href="#macros">Macros</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.assert_close.html" title="validate::assert_close macro">assert_close</a></div><div class="item-right docblock-short"><p>Asserts whether two numbers are close enough
-by comparing the first argument with the second, and 
+by comparing the first argument with the second, and
 the threshold being the third.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.assert_not_close.html" title="validate::assert_not_close macro">assert_not_close</a></div><div class="item-right docblock-short"><p>Asserts whether two numbers are close enough</p>
 </div></div></div><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.SeriesValidator.html" title="validate::SeriesValidator struct">SeriesValidator</a></div><div class="item-right docblock-short"><p>Validates a time series based on Mean Bias Error and Root Mean Squared Error</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Validations.html" title="validate::Validations struct">Validations</a></div><div class="item-right docblock-short"><p>This structure holds the validations to be ran, runs them, 
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Validations.html" title="validate::Validations struct">Validations</a></div><div class="item-right docblock-short"><p>This structure holds the validations to be ran, runs them,
 and writes the results into a Markdown report.</p>
 </div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Validate.html" title="validate::Validate trait">Validate</a></div><div class="item-right docblock-short"><p>The main trait of this crate. All validator modules need 
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Validate.html" title="validate::Validate trait">Validate</a></div><div class="item-right docblock-short"><p>The main trait of this crate. All validator modules need
 to comply with this trait.</p>
 </div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.from_csv.html" title="validate::from_csv fn">from_csv</a></div><div class="item-right docblock-short"><p>Reads a number of columns from a csv</p>
