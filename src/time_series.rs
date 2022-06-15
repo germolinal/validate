@@ -101,8 +101,8 @@ impl Validate for SeriesValidator {
         if let Some(allowed_mean_bias_error) = self.allowed_mean_bias_error {
             if mean_bias_error.abs() > allowed_mean_bias_error {
                 err_msg = format!(
-                    "{}\nAt {}: Mean Bias Error is {}, which is greater than the allowed value of {}",
-                    err_msg, self.title, mean_bias_error, allowed_mean_bias_error
+                    "{} * Mean Bias Error is {}, which is greater than the allowed value of {}",
+                    err_msg, mean_bias_error.abs(), allowed_mean_bias_error
                 );
                 mbe_msg = format!("{} | **Failed!**", mbe_msg)
             }
@@ -110,8 +110,8 @@ impl Validate for SeriesValidator {
         if let Some(allowed_root_mean_squared_error) = self.allowed_root_mean_squared_error {
             if root_mean_squared_error > allowed_root_mean_squared_error {
                 err_msg = format!(
-                    "{}\nAt {}: Mean Root Squared Error is {}, which is greater than the allowed value of {}",
-                    err_msg, self.title, root_mean_squared_error, allowed_root_mean_squared_error
+                    "{}\n * Mean Root Squared Error is {}, which is greater than the allowed value of {}",
+                    err_msg,  root_mean_squared_error, allowed_root_mean_squared_error
                 );
                 rmse_msg = format!("{} | **Failed!**", rmse_msg)
             }
@@ -154,7 +154,7 @@ impl Validate for SeriesValidator {
         file.write_all(buf.as_bytes()).unwrap();
 
         if err_msg.len() > 0 {
-            Err(err_msg)
+            Err(format!("At '{}':\n{}", self.title, err_msg))
         }else{
             Ok(())
         }

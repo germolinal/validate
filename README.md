@@ -36,7 +36,9 @@ let v = validate::SeriesValidator {
     x_label: Some("time step"),
     y_label: Some("Zone Temperature"),
     y_units: Some("C"),
-    title: "Compare Series!",
+    title: "Compare Series!",   
+    allowed_mean_bias_error: Some(0.0),
+    allowed_root_mean_squared_error: Some(0.0), 
     expected,
     found,
     ..validate::SeriesValidator::default()

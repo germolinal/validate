@@ -98,6 +98,8 @@ use std::{fs::File, io::Write};
 ///     title: "Compare Series!",
 ///     expected,
 ///     found,
+///     allowed_mean_bias_error: Some(0.0),
+///     allowed_root_mean_squared_error: Some(0.0),
 ///     ..validate::SeriesValidator::default()
 /// };
 /// validator.push(Box::new(v));
