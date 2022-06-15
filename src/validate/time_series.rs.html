@@ -252,7 +252,7 @@ SOFTWARE.
         .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>, <span class="ident">y</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">y</span> <span class="op">-</span> <span class="kw-2">*</span><span class="ident">x</span>)
         .<span class="ident">sum</span>();
         <span class="kw">let</span> <span class="ident">mean_bias_error</span> <span class="op">=</span> <span class="ident">bias_error</span> <span class="op">/</span> <span class="ident">n</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mbe_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;Root Mean Squared Error: {:.2}&quot;</span>, <span class="ident">mean_bias_error</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mbe_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot; * Root Mean Squared Error: {:.2}&quot;</span>, <span class="ident">mean_bias_error</span>);
 
         <span class="comment">// Process Root Mean Squared Error</span>
         <span class="kw">let</span> <span class="ident">squared_error</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="self">self</span>
@@ -262,7 +262,7 @@ SOFTWARE.
             .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>, <span class="ident">y</span>)<span class="op">|</span> (<span class="kw-2">*</span><span class="ident">y</span> <span class="op">-</span> <span class="kw-2">*</span><span class="ident">x</span>).<span class="ident">powi</span>(<span class="number">2</span>))
             .<span class="ident">sum</span>();
         <span class="kw">let</span> <span class="ident">root_mean_squared_error</span> <span class="op">=</span> (<span class="ident">squared_error</span> <span class="op">/</span> <span class="ident">n</span>).<span class="ident">sqrt</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmse_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;* Mean Bias Error: {:.2}&quot;</span>, <span class="ident">root_mean_squared_error</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmse_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot; * Mean Bias Error: {:.2}&quot;</span>, <span class="ident">root_mean_squared_error</span>);
 
         <span class="comment">// Check compliance</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">allowed_mean_bias_error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">allowed_mean_bias_error</span> {
@@ -312,7 +312,7 @@ SOFTWARE.
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="macro">simple_fmt!</span>(<span class="ident">data</span>, <span class="self">self</span>.<span class="ident">chart_title</span>, <span class="ident">x_label</span>, <span class="ident">y_label</span>);
 
         <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">format!</span>(
-            <span class="string">&quot;# {}\n\n * {}\n {}\n\n{}&quot;</span>,
+            <span class="string">&quot;# {}\n\n {}\n {}\n\n{}&quot;</span>,
             <span class="self">self</span>.<span class="ident">title</span>,
             <span class="ident">rmse_msg</span>,
             <span class="ident">mbe_msg</span>,
