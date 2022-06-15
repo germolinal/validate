@@ -85,7 +85,7 @@ impl Validate for SeriesValidator {
         .map(|(x, y)| *y - *x)
         .sum();
         let mean_bias_error = bias_error / n;
-        let mut mbe_msg = format!("Root Mean Squared Error: {:.2}", mean_bias_error);
+        let mut mbe_msg = format!(" * Root Mean Squared Error: {:.2}", mean_bias_error);
 
         // Process Root Mean Squared Error
         let squared_error: f64 = self
@@ -95,7 +95,7 @@ impl Validate for SeriesValidator {
             .map(|(x, y)| (*y - *x).powi(2))
             .sum();
         let root_mean_squared_error = (squared_error / n).sqrt();
-        let mut rmse_msg = format!("* Mean Bias Error: {:.2}", root_mean_squared_error);
+        let mut rmse_msg = format!(" * Mean Bias Error: {:.2}", root_mean_squared_error);
 
         // Check compliance
         if let Some(allowed_mean_bias_error) = self.allowed_mean_bias_error {
@@ -145,7 +145,7 @@ impl Validate for SeriesValidator {
         let p = simple_fmt!(data, self.chart_title, x_label, y_label);
 
         let buf = format!(
-            "# {}\n\n * {}\n {}\n\n{}",
+            "# {}\n\n {}\n {}\n\n{}",
             self.title,
             rmse_msg,
             mbe_msg,
