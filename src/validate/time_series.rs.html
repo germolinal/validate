@@ -165,7 +165,6 @@
 <span id="160">160</span>
 <span id="161">161</span>
 <span id="162">162</span>
-<span id="163">163</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -320,9 +319,8 @@ SOFTWARE.
             <span class="ident">mbe_msg</span>,
             <span class="ident">poloto::disp</span>(<span class="op">|</span><span class="ident">w</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">simple_theme</span>(<span class="ident">w</span>))
         );
-        
-
-        <span class="kw">if</span> <span class="ident">err_msg</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
+                
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">err_msg</span>.<span class="ident">is_empty</span>() {
             <span class="ident">ValidationResult::Err</span>(<span class="ident">file</span>, <span class="macro">format!</span>(<span class="string">&quot;At &#39;{}&#39;:\n{}&quot;</span>, <span class="self">self</span>.<span class="ident">title</span>, <span class="ident">err_msg</span>))
         }<span class="kw">else</span>{
             <span class="ident">ValidationResult::Ok</span>(<span class="ident">file</span>)

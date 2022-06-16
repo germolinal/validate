@@ -356,7 +356,6 @@
 <span id="351">351</span>
 <span id="352">352</span>
 <span id="353">353</span>
-<span id="354">354</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -588,6 +587,7 @@ SOFTWARE.
     <span class="doccomment">/// Creates a new `Validator` that will write a report on `target_file` and put the</span>
     <span class="doccomment">/// supporting data on `report_data_dir`</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>) -&gt; <span class="self">Self</span> {
+        <span class="comment">// dbg!(&quot;Check if target tile exists and is writeable BEFORE running validations&quot;);</span>
         <span class="self">Self</span> {
             <span class="ident">title</span>,
             <span class="ident">target_file</span>,
@@ -606,11 +606,8 @@ SOFTWARE.
         
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">md</span> <span class="op">=</span> <span class="ident">String::new</span>();
-        <span class="comment">// Write title</span>
-        <span class="ident">md</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}\n\n# {}\n\n&quot;</span>,<span class="ident">md</span>, <span class="self">self</span>.<span class="ident">title</span>);        
         
-        
+                        
         <span class="comment">// Solve</span>
         <span class="kw">let</span> <span class="ident">txt</span> : <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span>  <span class="self">self</span>.<span class="ident">validations</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
             <span class="comment">// md.write_all(b&quot;\n\n&quot;).unwrap();</span>
@@ -625,7 +622,7 @@ SOFTWARE.
                 }
             }            
         }).<span class="ident">collect</span>();         
-        <span class="kw">let</span> <span class="ident">txt</span> <span class="op">=</span> <span class="ident">txt</span>.<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>);
+        <span class="kw">let</span> <span class="ident">txt</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;# {}\n\n{}&quot;</span>,<span class="self">self</span>.<span class="ident">title</span>, <span class="ident">txt</span>.<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>));
         
         <span class="comment">// Write</span>
         <span class="comment">// Set up options and parser. </span>
@@ -638,12 +635,13 @@ SOFTWARE.
         <span class="ident">html::push_html</span>(<span class="kw-2">&amp;mut</span> <span class="ident">html_output</span>, <span class="ident">parser</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">fs::File::create</span>(<span class="self">self</span>.<span class="ident">target_file</span>).<span class="ident">unwrap</span>();
-        <span class="ident">output</span>.<span class="ident">write</span>(<span class="ident">html_output</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">output</span>.<span class="ident">write</span>(<span class="ident">html_output</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
+        <span class="macro">assert!</span>(<span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">html_output</span>.<span class="ident">len</span>(), <span class="string">&quot;Wrote too much... expecting {}, found {}&quot;</span>, <span class="ident">html_output</span>.<span class="ident">len</span>(), <span class="ident">n</span>);
         
 
-        <span class="comment">// Return        </span>
+        <span class="comment">// Return            </span>
         <span class="kw">if</span> <span class="ident">errors</span>.<span class="ident">is_empty</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+            <span class="prelude-val">Ok</span>(())
         } <span class="kw">else</span> {
             <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">errors</span> {
                 <span class="macro">eprintln!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">e</span>);
