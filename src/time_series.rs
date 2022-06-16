@@ -20,7 +20,7 @@ SOFTWARE.
 
 use crate::Validate;
 use poloto::prelude::*;
-use std::{fs::File, io::Write};
+use crate::ValidationResult;
 
 /// Validates a time series based on Mean Bias Error and Root Mean Squared Error
 #[derive(Default, Clone)]
@@ -63,17 +63,18 @@ pub struct SeriesValidator {
 }
 
 impl Validate for SeriesValidator {
-    fn validate(&self, file: &mut File) -> Result<(), String> {
+    fn validate(&self) -> ValidationResult {
 
+        
         let mut err_msg = "".to_string();
         
         
         if self.expected.len() != self.found.len() {
-            return Err(format!(
+            panic!(
                 "Series to compare of equal length. expected.len() = {}, found.len() = {}",
                 self.expected.len(),
                 self.found.len()
-            ));
+            );
         }
         let n = self.expected.len() as f64;
         let num = self.expected.len();
@@ -144,19 +145,19 @@ impl Validate for SeriesValidator {
         }
         let p = simple_fmt!(data, self.chart_title, x_label, y_label);
 
-        let buf = format!(
-            "# {}\n\n {}\n {}\n\n{}",
+        let file = format!(
+            "## {}\n\n {}\n {}\n\n{}",
             self.title,
             rmse_msg,
             mbe_msg,
             poloto::disp(|w| p.simple_theme(w))
         );
-        file.write_all(buf.as_bytes()).unwrap();
+        
 
         if err_msg.len() > 0 {
-            Err(format!("At '{}':\n{}", self.title, err_msg))
+            ValidationResult::Err(file, format!("At '{}':\n{}", self.title, err_msg))
         }else{
-            Ok(())
+            ValidationResult::Ok(file)
         }
     }
 }

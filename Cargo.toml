@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 csv = "1"
-poloto = "11.1.6"
+poloto = "12.0.2"
+pulldown-cmark = "0.9.1"

@@ -32,47 +32,49 @@ SOFTWARE.
 //! # Example
 //!
 //! ```
-//! use validate::{Validations, Validate};
+//! use validate::{Validator, Validate, ValidationResult};
 //! use std::{fs::File, io::Write};
 //!
 //! // This checks that two numbers are equal
-//! struct CustomValidation {
+//! struct CustomValidator {
 //!     expected: u8,
 //!     found: u8,
 //!     title: &'static str,
 //! }
 //!
-//! impl Validate for CustomValidation {
-//!     fn validate(&self, file: &mut File)->Result<(),String>{
+//! impl Validate for CustomValidator {
+//!     fn validate(&self)->ValidationResult{
 //!         let valid = self.expected == self.found;
+//!         let mut ret = String::new();
+//!         let mut err = String::new();
 //!         
 //!         
 //!         // We return an error if the validation is not succesful, but we still
 //!         // write something into the report. Even if this particular Validation
 //!         // fails, the Validations object will run all the validations and print
 //!         // the error messages into the STDERR
-//!         let (ret, buf) = if valid {
-//!             let ret = Ok(());
-//!             let buf = format!("# {}\n\n * Passed! {} and {} are equal", self.title, self.expected, self.found);
-//!             (ret, buf)
+//!         if valid {
+//!             let ret = format!("## {}\n\n * Passed! {} and {} are equal", self.title, self.expected, self.found);
 //!         }else{
-//!             let ret = Err(format!("{} and {} aren't equal", self.expected, self.found));
-//!             let buf = format!("# {}\n\n * Failed... {} and {} aren't equal", self.title, self.expected, self.found );
-//!             (ret, buf)
+//!             err = format!("{}\n{} and {} aren't equal", err, self.expected, self.found);
+//!             ret = format!("{}\n\n# {}\n\n * Failed... {} and {} aren't equal",ret, self.title, self.expected, self.found );
 //!         };
-//!         file.write_all(buf.as_bytes()).unwrap();
-//!         ret
+//!         if err.len()>0{
+//!             ValidationResult::Err(err, ret)
+//!         }else{
+//!             ValidationResult::Ok(ret)
+//!         }
 //!     }
 //! }
 //!
-//! let v = CustomValidation{
+//! let v = CustomValidator{
 //!     expected: 2,
 //!     found: 2,
 //!     title: "Check that 2 and 3 are equal"
 //! };
-//! let mut validations = Validations::new("report.md", ".");
-//! validations.push(Box::new(v));
-//! validations.validate().unwrap()
+//! let mut validator = Validator::new("Test Validation", "report.md");
+//! validator.push(Box::new(v));
+//! validator.validate().unwrap()
 //!
 //! ```
 
@@ -84,12 +86,12 @@ use std::{fs::File, io::Write};
 /// # Example
 ///
 /// ```
-/// use validate::{Validations, SeriesValidator};
+/// use validate::{Validator, SeriesValidator};
 ///
 /// let expected = vec![1., 2., 3.];
 /// let found = vec![5., 6., 6.];
 ///
-/// let mut validator = Validations::new("report.md", ".");    
+/// let mut validator = Validator::new("Validate Time series", "report.md");    
 /// // Note that we are not defining a maximum allowed error
 /// let v = validate::SeriesValidator {
 ///     x_label: Some("time step"),
@@ -98,8 +100,6 @@ use std::{fs::File, io::Write};
 ///     title: "Compare Series!",
 ///     expected,
 ///     found,
-///     allowed_mean_bias_error: Some(0.0),
-///     allowed_root_mean_squared_error: Some(0.0),
 ///     ..validate::SeriesValidator::default()
 /// };
 /// validator.push(Box::new(v));
@@ -192,27 +192,43 @@ macro_rules! assert_not_close {
     };
 }
 
-/// This structure holds the validations to be ran, runs them,
-/// and writes the results into a Markdown report.
-pub struct Validations {
+/// Implements a validation error, where 
+/// `Ok` returns just the text to write in the report,
+/// but `Err` returns not only that but also an error message
+pub enum ValidationResult {
+    /// Returns an error; meaning that returns that it returns 
+    /// something to write in the report and also an error message 
+    /// (in that order)
+    Err(String,String),
+
+    /// Returns a message to write on the report
+    Ok(String)
+}
+
+
+/// This structure holds a number of validations to be ran, runs them,
+/// and writes the results into an HTML report. It has a title, which is used
+/// as a Header in its report.
+pub struct Validator<'a> {
+    /// The title of this section
+    title: &'a str,
+
     /// The validations to run
     validations: Vec<Box<dyn Validate>>,
 
     /// The file in which the report will be written
-    target_file: &'static str,
-
-    /// The location of the data that will be used by the report (e.g., images)
-    report_data_dir: &'static str,
+    target_file: &'a str,
+    
 }
 
-impl Validations {
+impl <'a>Validator<'a> {
     /// Creates a new `Validator` that will write a report on `target_file` and put the
     /// supporting data on `report_data_dir`
-    pub fn new(target_file: &'static str, report_data_dir: &'static str) -> Self {
+    pub fn new(title: &'a str, target_file: &'a str) -> Self {
         Self {
-            validations: Vec::new(),
+            title,
             target_file,
-            report_data_dir,
+            validations: Vec::new(),
         }
     }
 
@@ -221,23 +237,38 @@ impl Validations {
         self.validations.push(v)
     }
 
-    /// Given a filename thaat should be stored into as support data, this
-    /// function returns path to that file inside of the directory containing
-    /// supporting data
-    pub fn get_support_path(&self, filename: &'static str) -> String {
-        return format!("{}/{}", self.report_data_dir, filename);
-    }
-
+    
     /// Runs the validations, writes the report and fails the task if necessary
     pub fn validate(&self) -> Result<(), String> {
         let mut md = File::create(self.target_file).unwrap();
         let mut errors = Vec::new();
-        for v in self.validations.iter() {
+        
+        
+        // Write title
+        let title = format!("# {}\n\n", self.title);        
+        md.write(title.as_bytes() ).unwrap();
+        
+        // Solve
+        let txt : Vec<String> =  self.validations.iter().map(|v| {
             md.write_all(b"\n\n").unwrap();
-            if let Err(msg) = v.validate(&mut md) {
-                errors.push(msg);
-            }
-        }
+            match v.validate(){
+                ValidationResult::Err(txt, e)=>{
+                    errors.push(e);
+                    md.write_all(txt.as_bytes()).unwrap();
+                    txt
+                },
+                ValidationResult::Ok(txt)=>{
+                    txt
+                }
+            }            
+        }).collect();         
+
+        // Write
+        txt.iter().for_each(|t| {
+            md.write_all(t.as_bytes()).unwrap();
+        });
+
+        // Return        
         if errors.is_empty() {
             return Ok(());
         } else {
@@ -252,13 +283,14 @@ impl Validations {
 /// The main trait of this crate. All validator modules need
 /// to comply with this trait.
 pub trait Validate {
+
     /// Runs a validation procedure, returning an error message if
     /// the validation failed.
     ///
     /// Whether it fails or not,
     /// it should write the results of the validations into `file`
     /// so a full report is written.
-    fn validate(&self, file: &mut File) -> Result<(), String>;
+    fn validate(&self) -> ValidationResult;
 }
 
 /// Reads a number of columns from a csv
@@ -303,4 +335,28 @@ mod tests {
     fn test_assert_not_close_fail() {
         assert_not_close!(1., 1., 0.1);
     }
+
+    // #[test]
+    // fn test_html(){
+    //     use std::io::{Write};
+    //     use std::fs;
+    //     use pulldown_cmark::{Parser, Options, html};
+
+    //     let contents = fs::read_to_string("./report.md").expect("Something went wrong reading the file");;        
+        
+    //     // Set up options and parser. Strikethroughs are not part of the CommonMark standard
+    //     // and we therefore must enable it explicitly.
+    //     let mut options = Options::empty();
+    //     options.insert(Options::ENABLE_STRIKETHROUGH);
+    //     let parser = Parser::new_ext(&contents, options);
+
+    //     // Write to String buffer.
+    //     let mut html_output = String::new();
+    //     html::push_html(&mut html_output, parser);
+
+    //     let mut output = fs::File::create("./report.html").unwrap();
+    //     output.write(html_output.as_bytes()).unwrap();
+        
+        
+    // }
 }

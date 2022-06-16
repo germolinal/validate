@@ -30,7 +30,7 @@ use validate::{Validations, SeriesValidator};
 let expected = vec![1., 2., 3.];
 let found = vec![5., 6., 6.];
 
-let mut validator = Validations::new("report.md", ".");    
+let mut validator = Validations::new("Validate Time series", "report.md";    
 // Note that we are not defining a maximum allowed error
 let v = validate::SeriesValidator {
     x_label: Some("time step"),
@@ -52,7 +52,11 @@ validator.validate().unwrap();
 ```
 This produces a result as follows
 
+# Validate Time series
+
+
 ## Compare Series!
+
 
  * Root Mean Squared Error: 3.70
  * Mean Bias Error: -3.67
@@ -103,7 +107,7 @@ let v = CustomValidation{
     found: 2,
     title: "Check that 2 and 3 are equal"
 };
-let mut validations = Validations::new("report.md", ".");
+let mut validations = Validations::new("Custom Validation", "report.md");
 validations.push(Box::new(v));
 validations.validate().unwrap()
 
