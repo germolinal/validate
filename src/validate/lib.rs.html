@@ -307,6 +307,64 @@
 <span id="302">302</span>
 <span id="303">303</span>
 <span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -341,47 +399,49 @@ SOFTWARE.
 <span class="doccomment">//! # Example</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! use validate::{Validations, Validate};</span>
+<span class="doccomment">//! use validate::{Validator, Validate, ValidationResult};</span>
 <span class="doccomment">//! use std::{fs::File, io::Write};</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // This checks that two numbers are equal</span>
-<span class="doccomment">//! struct CustomValidation {</span>
+<span class="doccomment">//! struct CustomValidator {</span>
 <span class="doccomment">//!     expected: u8,</span>
 <span class="doccomment">//!     found: u8,</span>
 <span class="doccomment">//!     title: &amp;&#39;static str,</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! impl Validate for CustomValidation {</span>
-<span class="doccomment">//!     fn validate(&amp;self, file: &amp;mut File)-&gt;Result&lt;(),String&gt;{</span>
+<span class="doccomment">//! impl Validate for CustomValidator {</span>
+<span class="doccomment">//!     fn validate(&amp;self)-&gt;ValidationResult{</span>
 <span class="doccomment">//!         let valid = self.expected == self.found;</span>
+<span class="doccomment">//!         let mut ret = String::new();</span>
+<span class="doccomment">//!         let mut err = String::new();</span>
 <span class="doccomment">//!         </span>
 <span class="doccomment">//!         </span>
 <span class="doccomment">//!         // We return an error if the validation is not succesful, but we still</span>
 <span class="doccomment">//!         // write something into the report. Even if this particular Validation</span>
 <span class="doccomment">//!         // fails, the Validations object will run all the validations and print</span>
 <span class="doccomment">//!         // the error messages into the STDERR</span>
-<span class="doccomment">//!         let (ret, buf) = if valid {</span>
-<span class="doccomment">//!             let ret = Ok(());</span>
-<span class="doccomment">//!             let buf = format!(&quot;# {}\n\n * Passed! {} and {} are equal&quot;, self.title, self.expected, self.found);</span>
-<span class="doccomment">//!             (ret, buf)</span>
+<span class="doccomment">//!         if valid {</span>
+<span class="doccomment">//!             let ret = format!(&quot;## {}\n\n * Passed! {} and {} are equal&quot;, self.title, self.expected, self.found);</span>
 <span class="doccomment">//!         }else{</span>
-<span class="doccomment">//!             let ret = Err(format!(&quot;{} and {} aren&#39;t equal&quot;, self.expected, self.found));</span>
-<span class="doccomment">//!             let buf = format!(&quot;# {}\n\n * Failed... {} and {} aren&#39;t equal&quot;, self.title, self.expected, self.found );</span>
-<span class="doccomment">//!             (ret, buf)</span>
+<span class="doccomment">//!             err = format!(&quot;{}\n{} and {} aren&#39;t equal&quot;, err, self.expected, self.found);</span>
+<span class="doccomment">//!             ret = format!(&quot;{}\n\n# {}\n\n * Failed... {} and {} aren&#39;t equal&quot;,ret, self.title, self.expected, self.found );</span>
 <span class="doccomment">//!         };</span>
-<span class="doccomment">//!         file.write_all(buf.as_bytes()).unwrap();</span>
-<span class="doccomment">//!         ret</span>
+<span class="doccomment">//!         if err.len()&gt;0{</span>
+<span class="doccomment">//!             ValidationResult::Err(err, ret)</span>
+<span class="doccomment">//!         }else{</span>
+<span class="doccomment">//!             ValidationResult::Ok(ret)</span>
+<span class="doccomment">//!         }</span>
 <span class="doccomment">//!     }</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let v = CustomValidation{</span>
+<span class="doccomment">//! let v = CustomValidator{</span>
 <span class="doccomment">//!     expected: 2,</span>
 <span class="doccomment">//!     found: 2,</span>
 <span class="doccomment">//!     title: &quot;Check that 2 and 3 are equal&quot;</span>
 <span class="doccomment">//! };</span>
-<span class="doccomment">//! let mut validations = Validations::new(&quot;report.md&quot;, &quot;.&quot;);</span>
-<span class="doccomment">//! validations.push(Box::new(v));</span>
-<span class="doccomment">//! validations.validate().unwrap()</span>
+<span class="doccomment">//! let mut validator = Validator::new(&quot;Test Validation&quot;, &quot;report.md&quot;);</span>
+<span class="doccomment">//! validator.push(Box::new(v));</span>
+<span class="doccomment">//! validator.validate().unwrap()</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 
@@ -393,12 +453,12 @@ SOFTWARE.
 <span class="doccomment">/// # Example</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// use validate::{Validations, SeriesValidator};</span>
+<span class="doccomment">/// use validate::{Validator, SeriesValidator};</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let expected = vec![1., 2., 3.];</span>
 <span class="doccomment">/// let found = vec![5., 6., 6.];</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let mut validator = Validations::new(&quot;report.md&quot;, &quot;.&quot;);    </span>
+<span class="doccomment">/// let mut validator = Validator::new(&quot;Validate Time series&quot;, &quot;report.md&quot;);    </span>
 <span class="doccomment">/// // Note that we are not defining a maximum allowed error</span>
 <span class="doccomment">/// let v = validate::SeriesValidator {</span>
 <span class="doccomment">///     x_label: Some(&quot;time step&quot;),</span>
@@ -499,27 +559,43 @@ SOFTWARE.
     };
 }
 
-<span class="doccomment">/// This structure holds the validations to be ran, runs them,</span>
-<span class="doccomment">/// and writes the results into a Markdown report.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Validations</span> {
+<span class="doccomment">/// Implements a validation error, where </span>
+<span class="doccomment">/// `Ok` returns just the text to write in the report,</span>
+<span class="doccomment">/// but `Err` returns not only that but also an error message</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ValidationResult</span> {
+    <span class="doccomment">/// Returns an error; meaning that returns that it returns </span>
+    <span class="doccomment">/// something to write in the report and also an error message </span>
+    <span class="doccomment">/// (in that order)</span>
+    <span class="prelude-val">Err</span>(<span class="ident">String</span>,<span class="ident">String</span>),
+
+    <span class="doccomment">/// Returns a message to write on the report</span>
+    <span class="prelude-val">Ok</span>(<span class="ident">String</span>)
+}
+
+
+<span class="doccomment">/// This structure holds a number of validations to be ran, runs them,</span>
+<span class="doccomment">/// and writes the results into an HTML report. It has a title, which is used</span>
+<span class="doccomment">/// as a Header in its report.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Validator</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// The title of this section</span>
+    <span class="ident">title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
+
     <span class="doccomment">/// The validations to run</span>
     <span class="ident">validations</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Validate</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The file in which the report will be written</span>
-    <span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-
-    <span class="doccomment">/// The location of the data that will be used by the report (e.g., images)</span>
-    <span class="ident">report_data_dir</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+    <span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
+    
 }
 
-<span class="kw">impl</span> <span class="ident">Validations</span> {
+<span class="kw">impl</span> <span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="ident">Validator</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Creates a new `Validator` that will write a report on `target_file` and put the</span>
     <span class="doccomment">/// supporting data on `report_data_dir`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">report_data_dir</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> {
-            <span class="ident">validations</span>: <span class="ident">Vec::new</span>(),
+            <span class="ident">title</span>,
             <span class="ident">target_file</span>,
-            <span class="ident">report_data_dir</span>,
+            <span class="ident">validations</span>: <span class="ident">Vec::new</span>(),
         }
     }
 
@@ -528,23 +604,38 @@ SOFTWARE.
         <span class="self">self</span>.<span class="ident">validations</span>.<span class="ident">push</span>(<span class="ident">v</span>)
     }
 
-    <span class="doccomment">/// Given a filename thaat should be stored into as support data, this</span>
-    <span class="doccomment">/// function returns path to that file inside of the directory containing</span>
-    <span class="doccomment">/// supporting data</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_support_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>) -&gt; <span class="ident">String</span> {
-        <span class="kw">return</span> <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.<span class="ident">report_data_dir</span>, <span class="ident">filename</span>);
-    }
-
+    
     <span class="doccomment">/// Runs the validations, writes the report and fails the task if necessary</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">md</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="self">self</span>.<span class="ident">target_file</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">errors</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">validations</span>.<span class="ident">iter</span>() {
+        
+        
+        <span class="comment">// Write title</span>
+        <span class="kw">let</span> <span class="ident">title</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;# {}\n\n&quot;</span>, <span class="self">self</span>.<span class="ident">title</span>);        
+        <span class="ident">md</span>.<span class="ident">write</span>(<span class="ident">title</span>.<span class="ident">as_bytes</span>() ).<span class="ident">unwrap</span>();
+        
+        <span class="comment">// Solve</span>
+        <span class="kw">let</span> <span class="ident">txt</span> : <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span>  <span class="self">self</span>.<span class="ident">validations</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
             <span class="ident">md</span>.<span class="ident">write_all</span>(<span class="string">b&quot;\n\n&quot;</span>).<span class="ident">unwrap</span>();
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">msg</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">validate</span>(<span class="kw-2">&amp;mut</span> <span class="ident">md</span>) {
-                <span class="ident">errors</span>.<span class="ident">push</span>(<span class="ident">msg</span>);
-            }
-        }
+            <span class="kw">match</span> <span class="ident">v</span>.<span class="ident">validate</span>(){
+                <span class="ident">ValidationResult::Err</span>(<span class="ident">txt</span>, <span class="ident">e</span>)=&gt;{
+                    <span class="ident">errors</span>.<span class="ident">push</span>(<span class="ident">e</span>);
+                    <span class="ident">md</span>.<span class="ident">write_all</span>(<span class="ident">txt</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
+                    <span class="ident">txt</span>
+                },
+                <span class="ident">ValidationResult::Ok</span>(<span class="ident">txt</span>)=&gt;{
+                    <span class="ident">txt</span>
+                }
+            }            
+        }).<span class="ident">collect</span>();         
+
+        <span class="comment">// Write</span>
+        <span class="ident">txt</span>.<span class="ident">iter</span>().<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> {
+            <span class="ident">md</span>.<span class="ident">write_all</span>(<span class="ident">t</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
+        });
+
+        <span class="comment">// Return        </span>
         <span class="kw">if</span> <span class="ident">errors</span>.<span class="ident">is_empty</span>() {
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
         } <span class="kw">else</span> {
@@ -559,13 +650,14 @@ SOFTWARE.
 <span class="doccomment">/// The main trait of this crate. All validator modules need</span>
 <span class="doccomment">/// to comply with this trait.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Validate</span> {
+
     <span class="doccomment">/// Runs a validation procedure, returning an error message if</span>
     <span class="doccomment">/// the validation failed.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Whether it fails or not,</span>
     <span class="doccomment">/// it should write the results of the validations into `file`</span>
     <span class="doccomment">/// so a full report is written.</span>
-    <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">file</span>: <span class="kw-2">&amp;mut</span> <span class="ident">File</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ValidationResult</span>;
 }
 
 <span class="doccomment">/// Reads a number of columns from a csv</span>
@@ -610,6 +702,30 @@ SOFTWARE.
     <span class="kw">fn</span> <span class="ident">test_assert_not_close_fail</span>() {
         <span class="macro">assert_not_close!</span>(<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">0.1</span>);
     }
+
+    <span class="comment">// #[test]</span>
+    <span class="comment">// fn test_html(){</span>
+    <span class="comment">//     use std::io::{Write};</span>
+    <span class="comment">//     use std::fs;</span>
+    <span class="comment">//     use pulldown_cmark::{Parser, Options, html};</span>
+
+    <span class="comment">//     let contents = fs::read_to_string(&quot;./report.md&quot;).expect(&quot;Something went wrong reading the file&quot;);;        </span>
+        
+    <span class="comment">//     // Set up options and parser. Strikethroughs are not part of the CommonMark standard</span>
+    <span class="comment">//     // and we therefore must enable it explicitly.</span>
+    <span class="comment">//     let mut options = Options::empty();</span>
+    <span class="comment">//     options.insert(Options::ENABLE_STRIKETHROUGH);</span>
+    <span class="comment">//     let parser = Parser::new_ext(&amp;contents, options);</span>
+
+    <span class="comment">//     // Write to String buffer.</span>
+    <span class="comment">//     let mut html_output = String::new();</span>
+    <span class="comment">//     html::push_html(&amp;mut html_output, parser);</span>
+
+    <span class="comment">//     let mut output = fs::File::create(&quot;./report.html&quot;).unwrap();</span>
+    <span class="comment">//     output.write(html_output.as_bytes()).unwrap();</span>
+        
+        
+    <span class="comment">// }</span>
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="validate" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
