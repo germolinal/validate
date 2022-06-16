@@ -246,7 +246,8 @@ impl <'a>Validator<'a> {
         
         // Write title
         let title = format!("# {}\n\n", self.title);        
-        md.write(title.as_bytes() ).unwrap();
+        let n = md.write(title.as_bytes() ).unwrap();
+        assert!(n <= title.len(), "Wrote too much... wrote {}, expecting {}",n , title.len());
         
         // Solve
         let txt : Vec<String> =  self.validations.iter().map(|v| {
