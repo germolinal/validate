@@ -365,6 +365,7 @@
 <span id="360">360</span>
 <span id="361">361</span>
 <span id="362">362</span>
+<span id="363">363</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -613,7 +614,8 @@ SOFTWARE.
         
         <span class="comment">// Write title</span>
         <span class="kw">let</span> <span class="ident">title</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;# {}\n\n&quot;</span>, <span class="self">self</span>.<span class="ident">title</span>);        
-        <span class="ident">md</span>.<span class="ident">write</span>(<span class="ident">title</span>.<span class="ident">as_bytes</span>() ).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">md</span>.<span class="ident">write</span>(<span class="ident">title</span>.<span class="ident">as_bytes</span>() ).<span class="ident">unwrap</span>();
+        <span class="macro">assert!</span>(<span class="ident">n</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">title</span>.<span class="ident">len</span>(), <span class="string">&quot;Wrote too much... wrote {}, expecting {}&quot;</span>,<span class="ident">n</span> , <span class="ident">title</span>.<span class="ident">len</span>());
         
         <span class="comment">// Solve</span>
         <span class="kw">let</span> <span class="ident">txt</span> : <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span>  <span class="self">self</span>.<span class="ident">validations</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> {
