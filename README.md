@@ -61,7 +61,6 @@ This produces a result as follows
  * Root Mean Squared Error: 3.70
  * Mean Bias Error: -3.67
 
-> **ERROR (todo, really)**: There should be an SVG plot here, but Github's markdown insists in writng the raw HTML instead of showing it. It looks allright on my preview in VSCode. This is the PNG screenshot of that
 
 ![chart](./readme_img/example.png)
 
