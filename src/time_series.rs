@@ -152,9 +152,8 @@ impl Validate for SeriesValidator {
             mbe_msg,
             poloto::disp(|w| p.simple_theme(w))
         );
-        
-
-        if err_msg.len() > 0 {
+                
+        if !err_msg.is_empty() {
             ValidationResult::Err(file, format!("At '{}':\n{}", self.title, err_msg))
         }else{
             ValidationResult::Ok(file)

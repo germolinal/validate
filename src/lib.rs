@@ -229,6 +229,7 @@ impl <'a>Validator<'a> {
     /// Creates a new `Validator` that will write a report on `target_file` and put the
     /// supporting data on `report_data_dir`
     pub fn new(title: &'a str, target_file: &'a str) -> Self {
+        // dbg!("Check if target tile exists and is writeable BEFORE running validations");
         Self {
             title,
             target_file,
@@ -247,11 +248,8 @@ impl <'a>Validator<'a> {
         
         let mut errors = Vec::new();
         
-        let mut md = String::new();
-        // Write title
-        md = format!("{}\n\n# {}\n\n",md, self.title);        
         
-        
+                        
         // Solve
         let txt : Vec<String> =  self.validations.iter().map(|v| {
             // md.write_all(b"\n\n").unwrap();
@@ -266,7 +264,7 @@ impl <'a>Validator<'a> {
                 }
             }            
         }).collect();         
-        let txt = txt.join("\n");
+        let txt = format!("# {}\n\n{}",self.title, txt.join("\n"));
         
         // Write
         // Set up options and parser. 
@@ -279,12 +277,13 @@ impl <'a>Validator<'a> {
         html::push_html(&mut html_output, parser);
 
         let mut output = fs::File::create(self.target_file).unwrap();
-        output.write(html_output.as_bytes()).unwrap();
+        let n = output.write(html_output.as_bytes()).unwrap();
+        assert!(n <= html_output.len(), "Wrote too much... expecting {}, found {}", html_output.len(), n);
         
 
-        // Return        
+        // Return            
         if errors.is_empty() {
-            return Ok(());
+            Ok(())
         } else {
             for e in errors {
                 eprintln!("{}", e);
