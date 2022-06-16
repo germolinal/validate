@@ -12,7 +12,7 @@ Root Mean Squared Error and Mean Bias Error between them.</p>
 <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>];
 <span class="kw">let</span> <span class="ident">found</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">5.</span>, <span class="number">6.</span>, <span class="number">6.</span>];
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">validator</span> <span class="op">=</span> <span class="ident">Validator::new</span>(<span class="string">&quot;Validate Time series&quot;</span>, <span class="string">&quot;report.md&quot;</span>);    
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">validator</span> <span class="op">=</span> <span class="ident">Validator::new</span>(<span class="string">&quot;Validate Time series&quot;</span>, <span class="string">&quot;report.html&quot;</span>);    
 <span class="comment">// Note that we are not defining a maximum allowed error</span>
 <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">validate::SeriesValidator</span> {
     <span class="ident">x_label</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;time step&quot;</span>),
