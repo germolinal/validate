@@ -30,7 +30,7 @@ use validate::{Validations, SeriesValidator};
 let expected = vec![1., 2., 3.];
 let found = vec![5., 6., 6.];
 
-let mut validator = Validations::new("Validate Time series", "report.md";    
+let mut validator = Validations::new("Validate Time series", "report.html";    
 // Note that we are not defining a maximum allowed error
 let v = validate::SeriesValidator {
     x_label: Some("time step"),
@@ -107,7 +107,7 @@ let v = CustomValidation{
     found: 2,
     title: "Check that 2 and 3 are equal"
 };
-let mut validations = Validations::new("Custom Validation", "report.md");
+let mut validations = Validations::new("Custom Validation", "report.html");
 validations.push(Box::new(v));
 validations.validate().unwrap()
 

@@ -18,7 +18,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
 #![deny(missing_docs)]
+
 
 //! This crate was developed with the intent of helping you to validate scientific
 //! tools; for exmple, for comparing the results of the temperature calculated
@@ -72,13 +74,15 @@ SOFTWARE.
 //!     found: 2,
 //!     title: "Check that 2 and 3 are equal"
 //! };
-//! let mut validator = Validator::new("Test Validation", "report.md");
+//! let mut validator = Validator::new("Test Validation", "report.html");
 //! validator.push(Box::new(v));
 //! validator.validate().unwrap()
 //!
 //! ```
 
 use std::{fs::File, io::Write};
+use std::fs;
+use pulldown_cmark::{Parser, Options, html};
 
 /// A Validator that plots two time series and calculates—if required—the
 /// Root Mean Squared Error and Mean Bias Error between them.
@@ -91,7 +95,7 @@ use std::{fs::File, io::Write};
 /// let expected = vec![1., 2., 3.];
 /// let found = vec![5., 6., 6.];
 ///
-/// let mut validator = Validator::new("Validate Time series", "report.md");    
+/// let mut validator = Validator::new("Validate Time series", "report.html");    
 /// // Note that we are not defining a maximum allowed error
 /// let v = validate::SeriesValidator {
 ///     x_label: Some("time step"),
@@ -240,22 +244,21 @@ impl <'a>Validator<'a> {
     
     /// Runs the validations, writes the report and fails the task if necessary
     pub fn validate(&self) -> Result<(), String> {
-        let mut md = File::create(self.target_file).unwrap();
+        
         let mut errors = Vec::new();
         
-        
+        let mut md = String::new();
         // Write title
-        let title = format!("# {}\n\n", self.title);        
-        let n = md.write(title.as_bytes() ).unwrap();
-        assert!(n <= title.len(), "Wrote too much... wrote {}, expecting {}",n , title.len());
+        md = format!("{}\n\n# {}\n\n",md, self.title);        
+        
         
         // Solve
         let txt : Vec<String> =  self.validations.iter().map(|v| {
-            md.write_all(b"\n\n").unwrap();
+            // md.write_all(b"\n\n").unwrap();
             match v.validate(){
                 ValidationResult::Err(txt, e)=>{
                     errors.push(e);
-                    md.write_all(txt.as_bytes()).unwrap();
+                    // md.write_all(txt.as_bytes()).unwrap();
                     txt
                 },
                 ValidationResult::Ok(txt)=>{
@@ -263,11 +266,21 @@ impl <'a>Validator<'a> {
                 }
             }            
         }).collect();         
-
+        let txt = txt.join("\n");
+        
         // Write
-        txt.iter().for_each(|t| {
-            md.write_all(t.as_bytes()).unwrap();
-        });
+        // Set up options and parser. 
+        let options = Options::empty();
+        // options.insert(Options::ENABLE_STRIKETHROUGH);
+        let parser = Parser::new_ext(&txt, options);
+
+        // Write to String buffer.
+        let mut html_output = String::new();
+        html::push_html(&mut html_output, parser);
+
+        let mut output = fs::File::create(self.target_file).unwrap();
+        output.write(html_output.as_bytes()).unwrap();
+        
 
         // Return        
         if errors.is_empty() {
@@ -337,27 +350,5 @@ mod tests {
         assert_not_close!(1., 1., 0.1);
     }
 
-    // #[test]
-    // fn test_html(){
-    //     use std::io::{Write};
-    //     use std::fs;
-    //     use pulldown_cmark::{Parser, Options, html};
-
-    //     let contents = fs::read_to_string("./report.md").expect("Something went wrong reading the file");;        
-        
-    //     // Set up options and parser. Strikethroughs are not part of the CommonMark standard
-    //     // and we therefore must enable it explicitly.
-    //     let mut options = Options::empty();
-    //     options.insert(Options::ENABLE_STRIKETHROUGH);
-    //     let parser = Parser::new_ext(&contents, options);
-
-    //     // Write to String buffer.
-    //     let mut html_output = String::new();
-    //     html::push_html(&mut html_output, parser);
-
-    //     let mut output = fs::File::create("./report.html").unwrap();
-    //     output.write(html_output.as_bytes()).unwrap();
-        
-        
-    // }
+    
 }
