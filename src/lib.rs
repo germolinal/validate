@@ -35,7 +35,7 @@ SOFTWARE.
 //!
 //! ```
 //! use validate::{Validator, Validate, ValidationResult};
-//! use std::{fs::File, io::Write};
+//! 
 //!
 //! // This checks that two numbers are equal
 //! struct CustomValidator {
@@ -56,7 +56,7 @@ SOFTWARE.
 //!         // fails, the Validations object will run all the validations and print
 //!         // the error messages into the STDERR
 //!         if valid {
-//!             let ret = format!("## {}\n\n * Passed! {} and {} are equal", self.title, self.expected, self.found);
+//!             ret = format!("## {}\n\n * Passed! {} and {} are equal", self.title, self.expected, self.found);
 //!         }else{
 //!             err = format!("{}\n{} and {} aren't equal", err, self.expected, self.found);
 //!             ret = format!("{}\n\n# {}\n\n * Failed... {} and {} aren't equal",ret, self.title, self.expected, self.found );
@@ -104,7 +104,7 @@ use pulldown_cmark::{Parser, Options, html};
 ///     title: "Compare Series!",
 ///     expected,
 ///     found,
-///     ..validate::SeriesValidator::default()
+///     ..SeriesValidator::default()
 /// };
 /// validator.push(Box::new(v));
 ///
@@ -229,7 +229,7 @@ impl <'a>Validator<'a> {
     /// Creates a new `Validator` that will write a report on `target_file` and put the
     /// supporting data on `report_data_dir`
     pub fn new(title: &'a str, target_file: &'a str) -> Self {
-        // dbg!("Check if target tile exists and is writeable BEFORE running validations");
+        dbg!("Check if target tile exists and is writeable BEFORE running validations");
         Self {
             title,
             target_file,
@@ -306,7 +306,7 @@ pub trait Validate {
     fn validate(&self) -> ValidationResult;
 }
 
-/// Reads a number of columns from a csv
+/// Reads a number of columns from a CSV, transforms them into f64
 pub fn from_csv(path: &str, cols: &[usize]) -> Vec<Vec<f64>> {
     let reader = File::open(path).unwrap();
     let mut rdr = csv::Reader::from_reader(reader);
@@ -331,6 +331,24 @@ pub fn from_csv(path: &str, cols: &[usize]) -> Vec<Vec<f64>> {
 
 #[cfg(test)]
 mod tests {
+    use crate::from_csv;
+
+
+    #[test]
+    fn test_from_csv(){
+        let data = from_csv("./tests/test_data/data.csv", &vec![0, 1, 2, 3]);
+        for c in 0..4{
+            let d = &data[c];
+            assert_eq!(d.len(), 3);
+            for (i,found) in d.iter().enumerate(){
+                let exp = 10*i+c;
+                assert_close!(exp as f64, *found);
+            }
+        }
+        
+
+    }
+
     #[test]
     fn test_assert_close_correct() {
         assert_close!(1., 2., 2.);
