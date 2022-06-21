@@ -1,4 +1,3 @@
-
 use validate::{SeriesValidator, Validator};
 
 #[test]

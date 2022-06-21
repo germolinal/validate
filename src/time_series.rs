@@ -19,8 +19,8 @@ SOFTWARE.
 */
 
 use crate::Validate;
-use poloto::prelude::*;
 use crate::ValidationResult;
+use poloto::prelude::*;
 
 /// Validates a time series based on Mean Bias Error and Root Mean Squared Error
 #[derive(Default, Clone)]
@@ -64,11 +64,8 @@ pub struct SeriesValidator {
 
 impl Validate for SeriesValidator {
     fn validate(&self) -> ValidationResult {
-
-        
         let mut err_msg = "".to_string();
-        
-        
+
         if self.expected.len() != self.found.len() {
             panic!(
                 "Series to compare of equal length. expected.len() = {}, found.len() = {}",
@@ -80,11 +77,11 @@ impl Validate for SeriesValidator {
         let num = self.expected.len();
         // Process Mean Bias Error
         let bias_error: f64 = self
-        .expected
-        .iter()
-        .zip(self.found.iter())
-        .map(|(x, y)| *y - *x)
-        .sum();
+            .expected
+            .iter()
+            .zip(self.found.iter())
+            .map(|(x, y)| *y - *x)
+            .sum();
         let mean_bias_error = bias_error / n;
         let mut mbe_msg = format!(" * Root Mean Squared Error: {:.2}", mean_bias_error);
 
@@ -103,7 +100,9 @@ impl Validate for SeriesValidator {
             if mean_bias_error.abs() > allowed_mean_bias_error {
                 err_msg = format!(
                     "{} * Mean Bias Error is {}, which is greater than the allowed value of {}",
-                    err_msg, mean_bias_error.abs(), allowed_mean_bias_error
+                    err_msg,
+                    mean_bias_error.abs(),
+                    allowed_mean_bias_error
                 );
                 mbe_msg = format!("{} | **Failed!**", mbe_msg)
             }
@@ -152,10 +151,10 @@ impl Validate for SeriesValidator {
             mbe_msg,
             poloto::disp(|w| p.simple_theme(w))
         );
-                
+
         if !err_msg.is_empty() {
             ValidationResult::Err(file, format!("At '{}':\n{}", self.title, err_msg))
-        }else{
+        } else {
             ValidationResult::Ok(file)
         }
     }

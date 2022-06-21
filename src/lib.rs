@@ -18,9 +18,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
 #![deny(missing_docs)]
-
 
 //! This crate was developed with the intent of helping you to validate scientific
 //! tools; for exmple, for comparing the results of the temperature calculated
@@ -35,7 +33,7 @@ SOFTWARE.
 //!
 //! ```
 //! use validate::{Validator, Validate, ValidationResult};
-//! 
+//!
 //!
 //! // This checks that two numbers are equal
 //! struct CustomValidator {
@@ -80,9 +78,9 @@ SOFTWARE.
 //!
 //! ```
 
-use std::{fs::File, io::Write};
+use pulldown_cmark::{html, Options, Parser};
 use std::fs;
-use pulldown_cmark::{Parser, Options, html};
+use std::{fs::File, io::Write};
 
 /// A Validator that plots two time series and calculates—if required—the
 /// Root Mean Squared Error and Mean Bias Error between them.
@@ -196,19 +194,18 @@ macro_rules! assert_not_close {
     };
 }
 
-/// Implements a validation error, where 
+/// Implements a validation error, where
 /// `Ok` returns just the text to write in the report,
 /// but `Err` returns not only that but also an error message
 pub enum ValidationResult {
-    /// Returns an error; meaning that returns that it returns 
-    /// something to write in the report and also an error message 
+    /// Returns an error; meaning that returns that it returns
+    /// something to write in the report and also an error message
     /// (in that order)
-    Err(String,String),
+    Err(String, String),
 
     /// Returns a message to write on the report
-    Ok(String)
+    Ok(String),
 }
-
 
 /// This structure holds a number of validations to be ran, runs them,
 /// and writes the results into an HTML report. It has a title, which is used
@@ -222,10 +219,9 @@ pub struct Validator<'a> {
 
     /// The file in which the report will be written
     target_file: &'a str,
-    
 }
 
-impl <'a>Validator<'a> {
+impl<'a> Validator<'a> {
     /// Creates a new `Validator` that will write a report on `target_file` and put the
     /// supporting data on `report_data_dir`
     pub fn new(title: &'a str, target_file: &'a str) -> Self {
@@ -242,32 +238,29 @@ impl <'a>Validator<'a> {
         self.validations.push(v)
     }
 
-    
     /// Runs the validations, writes the report and fails the task if necessary
     pub fn validate(&self) -> Result<(), String> {
-        
         let mut errors = Vec::new();
-        
-        
-                        
+
         // Solve
-        let txt : Vec<String> =  self.validations.iter().map(|v| {
-            // md.write_all(b"\n\n").unwrap();
-            match v.validate(){
-                ValidationResult::Err(txt, e)=>{
-                    errors.push(e);
-                    // md.write_all(txt.as_bytes()).unwrap();
-                    txt
-                },
-                ValidationResult::Ok(txt)=>{
-                    txt
+        let txt: Vec<String> = self
+            .validations
+            .iter()
+            .map(|v| {
+                // md.write_all(b"\n\n").unwrap();
+                match v.validate() {
+                    ValidationResult::Err(txt, e) => {
+                        errors.push(e);
+                        txt
+                    }
+                    ValidationResult::Ok(txt) => txt,
                 }
-            }            
-        }).collect();         
-        let txt = format!("# {}\n\n{}",self.title, txt.join("\n"));
-        
+            })
+            .collect();
+        let txt = format!("# {}\n\n{}", self.title, txt.join("\n"));
+
         // Write
-        // Set up options and parser. 
+        // Set up options and parser.
         let options = Options::empty();
         // options.insert(Options::ENABLE_STRIKETHROUGH);
         let parser = Parser::new_ext(&txt, options);
@@ -278,10 +271,14 @@ impl <'a>Validator<'a> {
 
         let mut output = fs::File::create(self.target_file).unwrap();
         let n = output.write(html_output.as_bytes()).unwrap();
-        assert!(n <= html_output.len(), "Wrote too much... expecting {}, found {}", html_output.len(), n);
-        
+        assert!(
+            n <= html_output.len(),
+            "Wrote too much... expecting {}, found {}",
+            html_output.len(),
+            n
+        );
 
-        // Return            
+        // Return
         if errors.is_empty() {
             Ok(())
         } else {
@@ -296,7 +293,6 @@ impl <'a>Validator<'a> {
 /// The main trait of this crate. All validator modules need
 /// to comply with this trait.
 pub trait Validate {
-
     /// Runs a validation procedure, returning an error message if
     /// the validation failed.
     ///
@@ -333,20 +329,17 @@ pub fn from_csv(path: &str, cols: &[usize]) -> Vec<Vec<f64>> {
 mod tests {
     use crate::from_csv;
 
-
     #[test]
-    fn test_from_csv(){
+    fn test_from_csv() {
         let data = from_csv("./tests/test_data/data.csv", &vec![0, 1, 2, 3]);
-        for c in 0..4{
+        for c in 0..4 {
             let d = &data[c];
             assert_eq!(d.len(), 3);
-            for (i,found) in d.iter().enumerate(){
-                let exp = 10*i+c;
+            for (i, found) in d.iter().enumerate() {
+                let exp = 10 * i + c;
                 assert_close!(exp as f64, *found);
             }
         }
-        
-
     }
 
     #[test]
@@ -367,5 +360,9 @@ mod tests {
         assert_not_close!(1., 1., 0.1);
     }
 
-    
+    #[test]
+    #[should_panic]
+    fn test_assert_not_close_fail_2() {
+        assert_not_close!(1., 1.);
+    }
 }
