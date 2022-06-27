@@ -11,7 +11,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-derive = { path = "derive" } 
+derive = { path = "./derive" } 
 csv = "1"
 poloto = "15.2.0"
 pulldown-cmark = "0.9.1"
