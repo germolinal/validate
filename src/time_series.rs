@@ -116,16 +116,12 @@ impl Validate for SeriesValidator {
             }
         }
 
-        let line_expected = poloto::build::line(
-            self.expected_legend.unwrap_or(&""),
-            poloto::range_iter([0.0, n], num).map(|i| [i, self.expected[i as usize]]),
-        );
-        let line_found = poloto::build::line(
-            self.found_legend.unwrap_or(&""),
-            poloto::range_iter([0.0, n], num).map(|i| [i, self.found[i as usize]]),
-        );
-        let m = poloto::build::origin();
-        let data = plots!(line_expected, line_found, m);
+        let exp_legend = self.expected_legend.unwrap_or(&"Expected");
+        let line_expected = poloto::range_iter([0.0, n], num).zip_output(|i| self.expected[i as usize]).buffered_plot().line(exp_legend);        
+        let found_legend = self.found_legend.unwrap_or(&"Found");
+        let line_found = poloto::range_iter([0.0, n], num).zip_output(|i| self.found[i as usize]).buffered_plot().line(found_legend);
+        let origin = poloto::build::origin();
+        // let data = plots!(line_expected, line_found, m);
 
         let mut x_label : String = self.x_label.unwrap_or(&"x").into();
         if let Some(units) = self.x_units {
@@ -136,7 +132,7 @@ impl Validate for SeriesValidator {
             y_label = format!("{} ({})", y_label, units);
         }
         let chart_title = self.chart_title.unwrap_or(&"");
-        let p = simple_fmt!(data, chart_title, &x_label, &y_label);
+        let p = quick_fmt!(chart_title, &x_label, &y_label, line_expected, line_found, origin);
 
         let file = format!(
             "{}\n {}\n\n{}",            

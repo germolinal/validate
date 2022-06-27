@@ -13,7 +13,7 @@ edition = "2021"
 [dependencies]
 derive = { path = "derive" } 
 csv = "1"
-poloto = "12.0.2"
+poloto = "15.2.0"
 pulldown-cmark = "0.9.1"
 
 [[tests]]
