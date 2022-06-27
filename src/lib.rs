@@ -20,6 +20,7 @@ SOFTWARE.
 
 #![deny(missing_docs)]
 
+
 //! This crate was developed with the intent of helping you to validate scientific
 //! tools; for exmple, for comparing the results of the temperature calculated
 //! by an algorithm and those measured in an experiment. It is supposed to be embedded
@@ -32,7 +33,7 @@ SOFTWARE.
 //! # Example
 //!
 //! ```
-//! use validate::{Validator, Validate, ValidationResult};
+//! use validate::{valid, Validator, Validate, ValidationResult};
 //!
 //!
 //! // This checks that two numbers are equal
@@ -67,20 +68,38 @@ SOFTWARE.
 //!     }
 //! }
 //!
-//! let v = CustomValidator{
-//!     expected: 2,
-//!     found: 2,
-//!     title: "Check that 2 and 3 are equal"
-//! };
-//! let mut validator = Validator::new("Test Validation", "report.html");
-//! validator.push(Box::new(v));
-//! validator.validate().unwrap()
+//! /// Some explanation about the validation
+//! ///
+//! /// It is always important to know what is it that we are validating
+//! #[valid(Some Validation)]
+//! fn check_if_equal()->Box<dyn Validate>{
+//!     let v = CustomValidator{
+//!         expected: 2,
+//!         found: 2,
+//!         title: "Check that 2 and 3 are equal"
+//!     };
+//!     Box::new(v) // We need a Box.
+//! }
+//! 
+//! // Write a test
+//! #[test]
+//! fn test_custon_validator(){
+//!     let mut validator = Validator::new("Test Validation", "report.html");
+//!     validator.push(check_if_equal());
+//!     validator.validate().unwrap()
+//! }
 //!
 //! ```
 
 use pulldown_cmark::{html, Options, Parser};
 use std::fs;
 use std::{fs::File, io::Write};
+
+pub use derive::valid;
+
+/// A wrapper that contains an object that implements [`Validate`]
+mod validator_wrapper;
+pub use validator_wrapper::ValidatorWrapper;
 
 /// A Validator that plots two time series and calculates—if required—the
 /// Root Mean Squared Error and Mean Bias Error between them.
@@ -99,7 +118,6 @@ use std::{fs::File, io::Write};
 ///     x_label: Some("time step"),
 ///     y_label: Some("Zone Temperature"),
 ///     y_units: Some("C"),
-///     title: "Compare Series!",
 ///     expected,
 ///     found,
 ///     ..SeriesValidator::default()
@@ -145,7 +163,7 @@ macro_rules! assert_close {
                 let allowed_diff: f64 = 1e-6;
                 let diff = (left_val as f64 - right_val as f64).abs();
                 if (diff > allowed_diff) {
-                    panic!(
+                    panic!( 
                         "{} and {} are not close enough (allowed difference was {}... found {})",
                         left_val, right_val, allowed_diff, diff
                     );
@@ -205,6 +223,19 @@ pub enum ValidationResult {
 
     /// Returns a message to write on the report
     Ok(String),
+}
+
+impl ValidationResult{
+    /// Panics if this `ValidationResult` is of type `Err`.
+    /// 
+    /// # Note
+    /// 
+    /// Calling this function discards the correct results from the stdout
+    pub fn unwrap(&self){
+        if let ValidationResult::Err(_, err) = self{
+            panic!("{}" ,err)
+        }
+    }
 }
 
 /// This structure holds a number of validations to be ran, runs them,

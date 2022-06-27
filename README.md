@@ -25,42 +25,43 @@ Root Mean Squared Error (RSME) and Mean Bias Error (MBE) between them. Setting a
 is optional and it will make it return an error if these values are exceded
 
 ```rs
-use validate::{Validations, SeriesValidator};
+use validate::{valid, SeriesValidator, Validate, Validator};
 
-let expected = vec![1., 2., 3.];
-let found = vec![5., 6., 6.];
+/// This test serves as an example of how to use the Validation crate.
+/// 
+/// You can add explanation using `Markdown`, and these will be translated into
+/// the `HTML` report.
+#[valid(Time Series Test)]
+fn time_series_test()->Box<dyn Validate>{
+    let expected = vec![1., 2., 3.];
+    let found = vec![5., 6., 6.];
+    let v = SeriesValidator {
+        x_label: Some("time step".into()),
+        y_label: Some("Zone Temperature".into()),
+        y_units: Some("C"),        
+        expected,
+        found,
+        ..validate::SeriesValidator::default()
+    };
 
-let mut validator = Validations::new("Validate Time series", "report.html";    
-// Note that we are not defining a maximum allowed error
-let v = validate::SeriesValidator {
-    x_label: Some("time step"),
-    y_label: Some("Zone Temperature"),
-    y_units: Some("C"),
-    title: "Compare Series!",   
-    allowed_mean_bias_error: Some(0.0),
-    allowed_root_mean_squared_error: Some(0.0), 
-    expected,
-    found,
-    ..validate::SeriesValidator::default()
-};
-validator.push(Box::new(v));
+    Box::new(v)
+}
 
-// This will not fail because we did not set a maximum allowed 
-// Root Mean Square Error or Mean Bias Error... if we did, it would return 
-// an error and the unwrap woul
-validator.validate().unwrap();
+// Write a test
+#[test]
+fn test_series_validator() {
+    let mut validator = Validator::new("Validate Time series", "report.html");
+    
+    let v = time_series_test();    
+    validator.push(v);
+
+    // This will not fail because we did not set a maximum allowed
+    // Root Mean Square Error or Mean Bias Error... if we did, it would return
+    // an error and the unwrap woul
+    validator.validate().unwrap();
+}
 ```
 This produces a result as follows
-
-# Validate Time series
-
-
-## Compare Series!
-
-
- * Root Mean Squared Error: 3.70
- * Mean Bias Error: -3.67
-
 
 ![chart](./readme_img/example.png)
 
@@ -68,46 +69,63 @@ This produces a result as follows
 # Example 2: Write custom validator
 
 ```rs
-use validate::{Validations, Validate};
-use std::{fs::File, io::Write};
 
-// This checks that two numbers are equal
-struct CustomValidation {
-    expected: u8,
-    found: u8,
-    title: &'static str,
-}
+ use validate::{valid, Validator, Validate, ValidationResult};
 
-impl Validate for CustomValidation {
-    fn validate(&self, file: &mut File)->Result<(),String>{
-        let valid = self.expected == self.found;
-        
-        
-        // We return an error if the validation is not succesful, but we still
-        // write something into the report. Even if this particular Validation 
-        // fails, the Validations object will run all the validations and print
-        // the error messages into the STDERR
-        let (ret, buf) = if valid {
-            let ret = Ok(());
-            let buf = format!("# {}\n\n * Passed! {} and {} are equal", self.title, self.expected, self.found);
-            (ret, buf)
-        }else{
-            let ret = Err(format!("{} and {} aren't equal", self.expected, self.found));
-            let buf = format!("# {}\n\n * Failed... {} and {} aren't equal", self.title, self.expected, self.found );
-            (ret, buf)
-        };
-        file.write_all(buf.as_bytes()).unwrap();
-        ret
-    }
-}
 
-let v = CustomValidation{
-    expected: 2,
-    found: 2,
-    title: "Check that 2 and 3 are equal"
-};
-let mut validations = Validations::new("Custom Validation", "report.html");
-validations.push(Box::new(v));
-validations.validate().unwrap()
+ // This checks that two numbers are equal
+ struct CustomValidator {
+     expected: u8,
+     found: u8,
+     title: &'static str,
+ }
+
+ impl Validate for CustomValidator {
+     fn validate(&self)->ValidationResult{
+         let valid = self.expected == self.found;
+         let mut ret = String::new();
+         let mut err = String::new();
+         
+         
+         // We return an error if the validation is not succesful, but we still
+         // write something into the report. Even if this particular Validation
+         // fails, the Validations object will run all the validations and print
+         // the error messages into the STDERR
+         if valid {
+             ret = format!("## {}\n\n * Passed! {} and {} are equal", self.title, self.expected, self.found);
+         }else{
+             err = format!("{}\n{} and {} aren't equal", err, self.expected, self.found);
+             ret = format!("{}\n\n# {}\n\n * Failed... {} and {} aren't equal",ret, self.title, self.expected, self.found );
+         };
+         if err.len()>0{
+             ValidationResult::Err(err, ret)
+         }else{
+             ValidationResult::Ok(ret)
+         }
+     }
+ }
+
+ /// Some explanation about the validation
+ ///
+ /// It is always important to know what is it that we are validating
+ #[valid(Some Validation)]
+ fn check_if_equal()->Box<dyn Validate>{
+     let v = CustomValidator{
+         expected: 2,
+         found: 2,
+         title: "Check that 2 and 3 are equal"
+     };
+     Box::new(v) // We need a Box.
+ }
+
+ #[test]
+ fn test_custon_validator(){
+
+     let mut validator = Validator::new("Test Validation", "report.html");
+     validator.push(check_if_equal());
+     validator.validate().unwrap()
+ }
+
+
 
 ```

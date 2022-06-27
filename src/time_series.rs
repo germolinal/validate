@@ -44,35 +44,34 @@ pub struct SeriesValidator {
     pub x_label: Option<&'static str>,
 
     /// The name of the series caled `expected`
-    pub expected_name: &'static str,
+    pub expected_legend: Option<&'static str>,
 
     /// The time series containing the expected values
     pub expected: Vec<f64>,
 
     /// The name of the `found` time series
-    pub found_name: &'static str,
+    pub found_legend: Option<&'static str>,
 
     /// The time series containing the found values
     pub found: Vec<f64>,
 
     /// the title of the chart
-    pub chart_title: &'static str,
-
-    /// The title of the section in the Markdown
-    pub title: &'static str,
+    pub chart_title: Option<&'static str>,    
 }
 
 impl Validate for SeriesValidator {
     fn validate(&self) -> ValidationResult {
-        let mut err_msg = "".to_string();
+        let mut err_msg = String::new();
 
         if self.expected.len() != self.found.len() {
-            panic!(
+            err_msg = format!(
                 "Series to compare of equal length. expected.len() = {}, found.len() = {}",
                 self.expected.len(),
                 self.found.len()
             );
+            return ValidationResult::Err(err_msg.clone(), err_msg);
         }
+
         let n = self.expected.len() as f64;
         let num = self.expected.len();
         // Process Mean Bias Error
@@ -118,42 +117,36 @@ impl Validate for SeriesValidator {
         }
 
         let line_expected = poloto::build::line(
-            self.expected_name,
+            self.expected_legend.unwrap_or(&""),
             poloto::range_iter([0.0, n], num).map(|i| [i, self.expected[i as usize]]),
         );
         let line_found = poloto::build::line(
-            self.found_name,
+            self.found_legend.unwrap_or(&""),
             poloto::range_iter([0.0, n], num).map(|i| [i, self.found[i as usize]]),
         );
         let m = poloto::build::origin();
         let data = plots!(line_expected, line_found, m);
 
-        let mut x_label = match self.x_label {
-            Some(v) => v.to_string(),
-            None => "x".to_string(),
-        };
+        let mut x_label : String = self.x_label.unwrap_or(&"x").into();
         if let Some(units) = self.x_units {
             x_label = format!("{} ({})", x_label, units);
         }
-        let mut y_label = match self.y_label {
-            Some(v) => v.to_string(),
-            None => "y".to_string(),
-        };
+        let mut y_label : String = self.y_label.unwrap_or(&"y").into();
         if let Some(units) = self.y_units {
             y_label = format!("{} ({})", y_label, units);
         }
-        let p = simple_fmt!(data, self.chart_title, x_label, y_label);
+        let chart_title = self.chart_title.unwrap_or(&"");
+        let p = simple_fmt!(data, chart_title, &x_label, &y_label);
 
         let file = format!(
-            "## {}\n\n {}\n {}\n\n{}",
-            self.title,
+            "{}\n {}\n\n{}",            
             rmse_msg,
             mbe_msg,
             poloto::disp(|w| p.simple_theme(w))
         );
 
         if !err_msg.is_empty() {
-            ValidationResult::Err(file, format!("At '{}':\n{}", self.title, err_msg))
+            ValidationResult::Err(file, err_msg)
         } else {
             ValidationResult::Ok(file)
         }
