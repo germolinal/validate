@@ -288,7 +288,12 @@ impl<'a> Validator<'a> {
     /// Creates a new `Validator` that will write a report on `target_file` and put the
     /// supporting data on `report_data_dir`
     pub fn new(title: &'a str, target_file: &'a str) -> Self {
-        dbg!("Check if target tile exists and is writeable BEFORE running validations");
+        
+        // Let's check that we can write into this file
+        if let std::io::Result::Err(_e) = fs::File::create(target_file){            
+            panic!("Cannot write to file '{}'... check that such directory exists.", target_file)
+        }
+        
         Self {
             title,
             target_file,
