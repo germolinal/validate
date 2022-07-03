@@ -472,6 +472,11 @@
 <span id="433">433</span>
 <span id="434">434</span>
 <span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -762,7 +767,12 @@ SOFTWARE.
     <span class="doccomment">/// Creates a new `Validator` that will write a report on `target_file` and put the</span>
     <span class="doccomment">/// supporting data on `report_data_dir`</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>, <span class="ident">target_file</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>) -&gt; <span class="self">Self</span> {
-        <span class="macro">dbg!</span>(<span class="string">&quot;Check if target tile exists and is writeable BEFORE running validations&quot;</span>);
+        
+        <span class="comment">// Let&#39;s check that we can write into this file</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">std::io::Result::Err</span>(<span class="ident">_e</span>) <span class="op">=</span> <span class="ident">fs::File::create</span>(<span class="ident">target_file</span>){            
+            <span class="macro">panic!</span>(<span class="string">&quot;Cannot write to file &#39;{}&#39;... check that such directory exists.&quot;</span>, <span class="ident">target_file</span>)
+        }
+        
         <span class="self">Self</span> {
             <span class="ident">title</span>,
             <span class="ident">target_file</span>,
