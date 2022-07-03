@@ -132,6 +132,40 @@ pub use validator_wrapper::ValidatorWrapper;
 mod time_series;
 pub use time_series::SeriesValidator;
 
+
+/// A Validator that creates a scatter plot from two datasets, indicating 
+/// the R-value and the linear equation fitting 
+///
+/// > Note that this is still in progress. For now it only plots
+/// 
+/// # Example
+///
+/// ```
+/// use validate::{Validator, ScatterValidator};
+///
+/// let expected = vec![1., 2., 3.];
+/// let found = vec![2., 4., 6.];
+///
+/// let mut validator = Validator::new("Validate Scatter", "report.html");    
+/// // Note that we are not defining a maximum allowed error
+/// let v = validate::ScatterValidator {
+///     units: Some("C"),
+///     expected,
+///     found,
+///     ..ScatterValidator::default()
+/// };
+/// validator.push(Box::new(v));
+///
+/// // This will not fail because we did not set a maximum allowed
+/// // Root Mean Square Error or Mean Bias Error... if we did, it would return
+/// // an error and the unwrap woul
+/// validator.validate().unwrap();
+/// ```
+mod scatter;
+pub use scatter::ScatterValidator;
+
+
+
 /// Asserts whether two numbers are close enough
 /// by comparing the first argument with the second, and
 /// the threshold being the third.
