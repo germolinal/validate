@@ -60,26 +60,41 @@ impl Validate for ScatterValidator {
             return ValidationResult::Err(err_msg.clone(), err_msg);
         }
 
+        let (a, b, r2) = crate::stats::linear_coefficients(&self.expected, &self.found);
 
        
         let n = self.expected.len();        
         let data = |i: usize|{
             [self.expected[i], self.found[i]]
         };
-        let range = (0..n).map(|x| x as usize);
-       
+        
         let exp_legend = self.expected_legend.unwrap_or(&"Expected");
         let found_legend = self.found_legend.unwrap_or(&"Found");                
         let origin = poloto::build::origin();
         
-
+        let (.. , max_x) = crate::stats::min_max(&self.expected);
+        let fit = |i: usize| {
+            if i == 0 {
+                [0., a]
+            }else if i == 1{
+                [max_x, a + max_x*b]
+            }else{
+                unreachable!();
+            }
+        }; 
+        let range = (0..2).map(|x| x as usize);
+        let fit = range.map(fit).buffered_plot().line("fit");
         
+        let range = (0..n).map(|x| x as usize);
+        let scatter = range.map(data).buffered_plot().scatter("some name");
         
         let chart_title = self.chart_title.unwrap_or(&"");
-        let p = quick_fmt!(chart_title, &exp_legend, &found_legend, range.map(data).buffered_plot().scatter("some name"), origin);
+        let p = quick_fmt!(chart_title, &exp_legend, &found_legend, scatter, fit, origin);
 
         let file = format!(
-            "\n\n{}",                        
+            " * Fit: {:.3} + {:.3}x \n * R2 = {}\n\n{}",                        
+            a, b,
+            r2,
             poloto::disp(|w| p.simple_theme(w))
         );
 

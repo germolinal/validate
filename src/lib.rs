@@ -27,8 +27,8 @@ SOFTWARE.
 //! the unit or integration testing.
 //!
 //! Different Validation tasks can be created by implementing the [`Validate`] trait.  
-//! These tasks will be stored into a [`Validations`] object which will write a report
-//! into a Markdown File.
+//! These tasks will be stored into a [`Validator`] object which will write a report
+//! into an HTML File.
 //!
 //! # Example
 //!
@@ -135,8 +135,6 @@ pub use time_series::SeriesValidator;
 
 /// A Validator that creates a scatter plot from two datasets, indicating 
 /// the R-value and the linear equation fitting 
-///
-/// > Note that this is still in progress. For now it only plots
 /// 
 /// # Example
 ///
@@ -389,6 +387,10 @@ pub fn from_csv(path: &str, cols: &[usize]) -> Vec<Vec<f64>> {
 
     ret
 }
+
+/// Module with some useful functions for calculating
+/// indicators for validation (e.g., Mean Squared Error)
+pub mod stats;
 
 #[cfg(test)]
 mod tests {
