@@ -402,6 +402,40 @@
 <span id="397">397</span>
 <span id="398">398</span>
 <span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -535,6 +569,40 @@ SOFTWARE.
 <span class="doccomment">/// ```</span>
 <span class="kw">mod</span> <span class="ident">time_series</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">time_series::SeriesValidator</span>;
+
+
+<span class="doccomment">/// A Validator that creates a scatter plot from two datasets, indicating </span>
+<span class="doccomment">/// the R-value and the linear equation fitting </span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// &gt; Note that this is still in progress. For now it only plots</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// # Example</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use validate::{Validator, ScatterValidator};</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let expected = vec![1., 2., 3.];</span>
+<span class="doccomment">/// let found = vec![2., 4., 6.];</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let mut validator = Validator::new(&quot;Validate Scatter&quot;, &quot;report.html&quot;);    </span>
+<span class="doccomment">/// // Note that we are not defining a maximum allowed error</span>
+<span class="doccomment">/// let v = validate::ScatterValidator {</span>
+<span class="doccomment">///     units: Some(&quot;C&quot;),</span>
+<span class="doccomment">///     expected,</span>
+<span class="doccomment">///     found,</span>
+<span class="doccomment">///     ..ScatterValidator::default()</span>
+<span class="doccomment">/// };</span>
+<span class="doccomment">/// validator.push(Box::new(v));</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // This will not fail because we did not set a maximum allowed</span>
+<span class="doccomment">/// // Root Mean Square Error or Mean Bias Error... if we did, it would return</span>
+<span class="doccomment">/// // an error and the unwrap woul</span>
+<span class="doccomment">/// validator.validate().unwrap();</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">mod</span> <span class="ident">scatter</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">scatter::ScatterValidator</span>;
+
+
 
 <span class="doccomment">/// Asserts whether two numbers are close enough</span>
 <span class="doccomment">/// by comparing the first argument with the second, and</span>
@@ -802,5 +870,5 @@ SOFTWARE.
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="validate" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="validate" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0 (a8314ef7d 2022-06-27)" ></div>
 </body></html>
