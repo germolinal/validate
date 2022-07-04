@@ -77,11 +77,11 @@ impl Validate for SeriesValidator {
         
         
         let mean_bias_error: f64 = crate::stats::mean_bias_error(&self.expected, &self.found);
-        let mut mbe_msg = format!(" * Root Mean Squared Error: {:.2}", mean_bias_error);
+        let mut mbe_msg = format!(" * Mean Bias Error: {:.2}", mean_bias_error);
 
         // Process Root Mean Squared Error
         let root_mean_squared_error = crate::stats::root_mean_squared_error(&self.expected, &self.found);
-        let mut rmse_msg = format!(" * Mean Bias Error: {:.2}", root_mean_squared_error);
+        let mut rmse_msg = format!(" * Root Mean Squared Error: {:.2}", root_mean_squared_error);
 
         // Check compliance
         if let Some(allowed_mean_bias_error) = self.allowed_mean_bias_error {
