@@ -53,7 +53,7 @@ impl Validate for ScatterValidator {
 
         if self.expected.len() != self.found.len() {
             err_msg = format!(
-                "Series to compare of equal length. expected.len() = {}, found.len() = {}",
+                "Series to compare have different lengths. expected.len() = {}, found.len() = {}",
                 self.expected.len(),
                 self.found.len()
             );
@@ -82,14 +82,24 @@ impl Validate for ScatterValidator {
                 unreachable!();
             }
         }; 
-        let range = (0..2).map(|x| x as usize);
-        let fit = range.map(fit).buffered_plot().line("fit");
-        
+        let range = (0..2).map(|x| x as usize);        
+        let fit = range.clone().map(fit).buffered_plot().line("fit");
+
+        let exp_fit = |i: usize| {
+            if i == 0 {
+                [0., 0.]
+            }else if i == 1{
+                [max_x, max_x]
+            }else{
+                unreachable!();
+            }
+        }; 
+        let exp_fit = range.map(exp_fit).buffered_plot().line("expected_fit");        
         let range = (0..n).map(|x| x as usize);
         let scatter = range.map(data).buffered_plot().scatter("some name");
         
         let chart_title = self.chart_title.unwrap_or(&"");
-        let p = quick_fmt!(chart_title, &exp_legend, &found_legend, scatter, fit, origin);
+        let p = quick_fmt!(chart_title, &exp_legend, &found_legend, scatter, fit, exp_fit, origin);
 
         let file = format!(
             " * Fit: {:.3} + {:.3}x \n * R2 = {}\n\n{}",                        

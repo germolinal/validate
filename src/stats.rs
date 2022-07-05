@@ -131,10 +131,7 @@ pub fn linear_coefficients(x: &[f64], y: &[f64]) -> (f64, f64, f64) {
     
     
     let b = (ss_xy - ss_x*ss_y/n)/(ss_xx - ss_x*ss_x/n);    
-    let a = (ss_y - b * ss_x)/n;
-    dbg!(ss_x, ss_xx, ss_y, ss_yy, ss_xy, a, b);
-
-    // dbg!(n, mean_x, mean_y, ss_xy, ss_xx, b, a);
+    let a = (ss_y - b * ss_x)/n;    
     let rsquared = (n*ss_xy - ss_x*ss_y).powi(2)/( (n*ss_xx -ss_x*ss_x)*(n*ss_yy - ss_y*ss_y) );
 
     // let rsquared = 1.;

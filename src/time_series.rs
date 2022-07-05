@@ -65,7 +65,7 @@ impl Validate for SeriesValidator {
 
         if self.expected.len() != self.found.len() {
             err_msg = format!(
-                "Series to compare of equal length. expected.len() = {}, found.len() = {}",
+                "Series to compare have different lengths. expected.len() = {}, found.len() = {}",
                 self.expected.len(),
                 self.found.len()
             );
