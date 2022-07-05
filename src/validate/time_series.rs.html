@@ -243,7 +243,7 @@ SOFTWARE.
 
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">found</span>.<span class="ident">len</span>() {
             <span class="ident">err_msg</span> <span class="op">=</span> <span class="macro">format!</span>(
-                <span class="string">&quot;Series to compare of equal length. expected.len() = {}, found.len() = {}&quot;</span>,
+                <span class="string">&quot;Series to compare have different lengths. expected.len() = {}, found.len() = {}&quot;</span>,
                 <span class="self">self</span>.<span class="ident">expected</span>.<span class="ident">len</span>(),
                 <span class="self">self</span>.<span class="ident">found</span>.<span class="ident">len</span>()
             );
@@ -255,11 +255,11 @@ SOFTWARE.
         
         
         <span class="kw">let</span> <span class="ident">mean_bias_error</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::stats::mean_bias_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">expected</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">found</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mbe_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot; * Root Mean Squared Error: {:.2}&quot;</span>, <span class="ident">mean_bias_error</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mbe_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot; * Mean Bias Error: {:.2}&quot;</span>, <span class="ident">mean_bias_error</span>);
 
         <span class="comment">// Process Root Mean Squared Error</span>
         <span class="kw">let</span> <span class="ident">root_mean_squared_error</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::stats::root_mean_squared_error</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">expected</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">found</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmse_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot; * Mean Bias Error: {:.2}&quot;</span>, <span class="ident">root_mean_squared_error</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rmse_msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot; * Root Mean Squared Error: {:.2}&quot;</span>, <span class="ident">root_mean_squared_error</span>);
 
         <span class="comment">// Check compliance</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">allowed_mean_bias_error</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">allowed_mean_bias_error</span> {
