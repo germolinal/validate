@@ -338,13 +338,13 @@ impl<'a> Validator<'a> {
         html::push_html(&mut html_output, parser);
 
         let mut output = fs::File::create(self.target_file).unwrap();
-        let n = output.write(html_output.as_bytes()).unwrap();
-        assert!(
-            n <= html_output.len(),
-            "Wrote too much... expecting {}, found {}",
-            html_output.len(),
-            n
-        );
+
+        // Open HTML        
+        output.write_all(format!("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>{}</title></head><body>", self.title).as_bytes()).unwrap();
+        
+        output.write_all(html_output.as_bytes()).unwrap();        
+        // Close html
+        output.write_all(b"</body></html>").unwrap();
 
         // Return
         if errors.is_empty() {

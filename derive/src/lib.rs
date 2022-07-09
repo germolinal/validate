@@ -86,7 +86,8 @@ fn get_docs(attrs: &[syn::Attribute]) -> String {
 /// This is a copy from [Rust-Criterion](https://github.com/bheisler/criterion.rs)
 fn find_name(stream: proc_macro2::TokenStream) -> Ident {
     let mut iter = stream.into_iter();
-    while let Some(tok) = iter.next() {
+    // while let Some(tok) = iter.next() {
+    for tok in iter.by_ref(){
         if let TokenTree::Ident(ident) = tok {
             if ident == "fn" {
                 break;

@@ -68,8 +68,8 @@ impl Validate for ScatterValidator {
             [self.expected[i], self.found[i]]
         };
         
-        let exp_legend = self.expected_legend.unwrap_or(&"Expected");
-        let found_legend = self.found_legend.unwrap_or(&"Found");                
+        let exp_legend = self.expected_legend.unwrap_or("Expected");
+        let found_legend = self.found_legend.unwrap_or("Found");                
         let origin = poloto::build::origin();
         
         let (.. , max_x) = crate::stats::min_max(&self.expected);
@@ -98,11 +98,11 @@ impl Validate for ScatterValidator {
         let range = (0..n).map(|x| x as usize);
         let scatter = range.map(data).buffered_plot().scatter("some name");
         
-        let chart_title = self.chart_title.unwrap_or(&"");
+        let chart_title = self.chart_title.unwrap_or("");
         let p = quick_fmt!(chart_title, &exp_legend, &found_legend, scatter, fit, exp_fit, origin);
 
         let file = format!(
-            " * Fit: {:.3} + {:.3}x \n * R2 = {}\n\n{}",                        
+            " * Fit: {:.3} + {:.3}x \n * R2 = {:.3}\n\n{}",                        
             a, b,
             r2,
             poloto::disp(|w| p.simple_theme(w))
