@@ -18,41 +18,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
 /// Calculates the maximum and minimum in a series.
-/// 
+///
 /// # Example
 /// ```
 /// use validate::assert_close;
 /// use validate::stats::min_max;
-/// 
+///
 /// let x = vec![1., 2., 3., 4., 5.];
 /// let (min, max) = min_max(&x);
 /// assert_close!(min, 1.);
 /// assert_close!(max, 5.);
 /// ```
-/// 
+///
 /// # Panics
-/// 
+///
 /// * if the dataset is empty
 /// * If there are any `NaN` in the dataset
-pub fn min_max(x:&[f64])->(f64, f64) {
-    assert_ne!(x.len(), 0, "Trying to calculate Max and Min of empty dataset");
+pub fn min_max(x: &[f64]) -> (f64, f64) {
+    assert_ne!(
+        x.len(),
+        0,
+        "Trying to calculate Max and Min of empty dataset"
+    );
 
     let mut max = f64::MIN;
     let mut min = f64::MAX;
     for v in x {
-        assert!(!v.is_nan(), "Found NaN when calculating min and max of dataset");
-        if *v < min{
+        assert!(
+            !v.is_nan(),
+            "Found NaN when calculating min and max of dataset"
+        );
+        if *v < min {
             min = *v;
         }
         if *v > max {
             max = *v;
-        } 
+        }
     }
-    (min,max)
+    (min, max)
 }
-
 
 /// Calculates the mean of a dataset
 ///
@@ -92,7 +97,7 @@ pub fn mean(x: &[f64]) -> f64 {
 /// ```
 /// use validate::assert_close;
 /// use validate::stats::linear_coefficients;
-/// 
+///
 /// // Perfect fit
 /// let x = vec![1., 2., 3., 4.];
 /// let (a, b, rsquared) = linear_coefficients(&x, &x);
@@ -122,17 +127,16 @@ pub fn linear_coefficients(x: &[f64], y: &[f64]) -> (f64, f64, f64) {
 
     let n = x.len() as f64;
 
-    let ss_x : f64 = x.iter().sum();
-    let ss_xx : f64 = x.iter().map(|x| x*x).sum();
-    let ss_y : f64 = y.iter().sum();
-    let ss_yy : f64 = y.iter().map(|y| y*y).sum();
+    let ss_x: f64 = x.iter().sum();
+    let ss_xx: f64 = x.iter().map(|x| x * x).sum();
+    let ss_y: f64 = y.iter().sum();
+    let ss_yy: f64 = y.iter().map(|y| y * y).sum();
     let ss_xy: f64 = x.iter().zip(y.iter()).map(|(x, y)| *x * *y).sum();
 
-    
-    
-    let b = (ss_xy - ss_x*ss_y/n)/(ss_xx - ss_x*ss_x/n);    
-    let a = (ss_y - b * ss_x)/n;    
-    let rsquared = (n*ss_xy - ss_x*ss_y).powi(2)/( (n*ss_xx -ss_x*ss_x)*(n*ss_yy - ss_y*ss_y) );
+    let b = (ss_xy - ss_x * ss_y / n) / (ss_xx - ss_x * ss_x / n);
+    let a = (ss_y - b * ss_x) / n;
+    let rsquared =
+        (n * ss_xy - ss_x * ss_y).powi(2) / ((n * ss_xx - ss_x * ss_x) * (n * ss_yy - ss_y * ss_y));
 
     // let rsquared = 1.;
     (a, b, rsquared)

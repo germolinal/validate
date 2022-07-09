@@ -34,7 +34,7 @@ pub fn valid(title: TokenStream, item: TokenStream) -> TokenStream {
     let docs = get_docs(v);
     let span = proc_macro2::Span::call_site();
     let function_name = find_name(item.clone());
-    
+
     let output = quote_spanned!(span =>
 
         fn #function_name ()-> Box<dyn Validate + 'static> {
@@ -48,13 +48,11 @@ pub fn valid(title: TokenStream, item: TokenStream) -> TokenStream {
                 description: #docs.into(),
                 val: t
             };
-            
+
             Box::new(wrapper)
         }
     );
     output.into()
-
-    
 }
 
 fn get_docs(attrs: &[syn::Attribute]) -> String {
@@ -81,13 +79,11 @@ fn get_docs(attrs: &[syn::Attribute]) -> String {
     ret
 }
 
-
-
 /// This is a copy from [Rust-Criterion](https://github.com/bheisler/criterion.rs)
 fn find_name(stream: proc_macro2::TokenStream) -> Ident {
     let mut iter = stream.into_iter();
     // while let Some(tok) = iter.next() {
-    for tok in iter.by_ref(){
+    for tok in iter.by_ref() {
         if let TokenTree::Ident(ident) = tok {
             if ident == "fn" {
                 break;

@@ -20,7 +20,6 @@ SOFTWARE.
 
 #![deny(missing_docs)]
 
-
 //! This crate was developed with the intent of helping you to validate scientific
 //! tools; for exmple, for comparing the results of the temperature calculated
 //! by an algorithm and those measured in an experiment. It is supposed to be embedded
@@ -80,7 +79,7 @@ SOFTWARE.
 //!     };
 //!     Box::new(v) // We need a Box.
 //! }
-//! 
+//!
 //! // Write a test
 //! #[test]
 //! fn test_custon_validator(){
@@ -132,10 +131,9 @@ pub use validator_wrapper::ValidatorWrapper;
 mod time_series;
 pub use time_series::SeriesValidator;
 
-
-/// A Validator that creates a scatter plot from two datasets, indicating 
-/// the R-value and the linear equation fitting 
-/// 
+/// A Validator that creates a scatter plot from two datasets, indicating
+/// the R-value and the linear equation fitting
+///
 /// # Example
 ///
 /// ```
@@ -161,8 +159,6 @@ pub use time_series::SeriesValidator;
 /// ```
 mod scatter;
 pub use scatter::ScatterValidator;
-
-
 
 /// Asserts whether two numbers are close enough
 /// by comparing the first argument with the second, and
@@ -195,7 +191,7 @@ macro_rules! assert_close {
                 let allowed_diff: f64 = 1e-6;
                 let diff = (left_val as f64 - right_val as f64).abs();
                 if (diff > allowed_diff) {
-                    panic!( 
+                    panic!(
                         "{} and {} are not close enough (allowed difference was {}... found {})",
                         left_val, right_val, allowed_diff, diff
                     );
@@ -257,15 +253,15 @@ pub enum ValidationResult {
     Ok(String),
 }
 
-impl ValidationResult{
+impl ValidationResult {
     /// Panics if this `ValidationResult` is of type `Err`.
-    /// 
+    ///
     /// # Note
-    /// 
+    ///
     /// Calling this function discards the correct results from the stdout
-    pub fn unwrap(&self){
-        if let ValidationResult::Err(_, err) = self{
-            panic!("{}" ,err)
+    pub fn unwrap(&self) {
+        if let ValidationResult::Err(_, err) = self {
+            panic!("{}", err)
         }
     }
 }
@@ -288,12 +284,14 @@ impl<'a> Validator<'a> {
     /// Creates a new `Validator` that will write a report on `target_file` and put the
     /// supporting data on `report_data_dir`
     pub fn new(title: &'a str, target_file: &'a str) -> Self {
-        
         // Let's check that we can write into this file
-        if let std::io::Result::Err(_e) = fs::File::create(target_file){            
-            panic!("Cannot write to file '{}'... check that such directory exists.", target_file)
+        if let std::io::Result::Err(_e) = fs::File::create(target_file) {
+            panic!(
+                "Cannot write to file '{}'... check that such directory exists.",
+                target_file
+            )
         }
-        
+
         Self {
             title,
             target_file,
@@ -339,10 +337,10 @@ impl<'a> Validator<'a> {
 
         let mut output = fs::File::create(self.target_file).unwrap();
 
-        // Open HTML        
+        // Open HTML
         output.write_all(format!("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>{}</title></head><body>", self.title).as_bytes()).unwrap();
-        
-        output.write_all(html_output.as_bytes()).unwrap();        
+
+        output.write_all(html_output.as_bytes()).unwrap();
         // Close html
         output.write_all(b"</body></html>").unwrap();
 

@@ -20,11 +20,10 @@ SOFTWARE.
 
 use crate::{Validate, ValidationResult};
 
-type ValidationFn = fn()->Box<dyn Validate + 'static>;
-
+type ValidationFn = fn() -> Box<dyn Validate + 'static>;
 
 /// A wrapper that contains an object that implements [`Validate`]
-pub struct ValidatorWrapper{
+pub struct ValidatorWrapper {
     /// The title of the test
     pub title: String,
 
@@ -33,27 +32,28 @@ pub struct ValidatorWrapper{
 
     /// The Validator
     pub val: ValidationFn,
-
 }
 
 impl ValidatorWrapper {
-
     /// Format the description of a Validator
-    fn format_description(&self, txt: String)->String{
-        format!("## {}\n\n{}\n\n #### Indicators \n\n{}\n", self.title, self.description, txt)
-    }    
+    fn format_description(&self, txt: String) -> String {
+        format!(
+            "## {}\n\n{}\n\n #### Indicators \n\n{}\n",
+            self.title, self.description, txt
+        )
+    }
 }
 
-impl Validate for ValidatorWrapper{
+impl Validate for ValidatorWrapper {
     /// Validates a Wrapper
-    fn validate(&self)->ValidationResult{        
-        let v = &self.val;        
+    fn validate(&self) -> ValidationResult {
+        let v = &self.val;
         match v().validate() {
-            ValidationResult::Ok(txt)=>{
+            ValidationResult::Ok(txt) => {
                 let ret = self.format_description(txt);
                 ValidationResult::Ok(ret)
-            },
-            ValidationResult::Err(txt, err)=>{
+            }
+            ValidationResult::Err(txt, err) => {
                 let ret = self.format_description(txt);
                 ValidationResult::Err(ret, err)
             }
@@ -66,28 +66,21 @@ mod tests {
     use super::*;
     use crate::SeriesValidator;
 
-    
-
-    
-
     #[test]
-    fn test_wrapper(){
-
-        
-        fn aux()->Box<dyn Validate>{
+    fn test_wrapper() {
+        fn aux() -> Box<dyn Validate> {
             let expected = vec![1., 2., 3.];
             let found = vec![5., 6., 6.];
-    
+
             let v = SeriesValidator {
                 x_label: Some("time step".into()),
                 y_label: Some("Zone Temperature".into()),
-                y_units: Some("C"),        
+                y_units: Some("C"),
                 expected,
                 found,
                 ..SeriesValidator::default()
             };
             Box::new(v)
-    
         }
 
         let t: ValidationFn = aux;
@@ -95,24 +88,16 @@ mod tests {
         let wrapper = ValidatorWrapper {
             title: "Some Title".into(),
             description: "The Description".into(),
-            val : t,
+            val: t,
         };
 
-
-
-        match wrapper.validate(){
-            ValidationResult::Ok(txt)=>{
+        match wrapper.validate() {
+            ValidationResult::Ok(txt) => {
                 println!("{}", txt)
-            },
-            ValidationResult::Err(_,err)=>{
-                panic!("{}",err)
+            }
+            ValidationResult::Err(_, err) => {
+                panic!("{}", err)
             }
         }
-
-
-
-
-
     }
-
 }
