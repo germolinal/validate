@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ValidatorWrapper","A wrapper that contains an object that implements [`Validate`]"]],"type":[["ValidationFn",""]]});
+window.SIDEBAR_ITEMS = {"struct":["ValidatorWrapper"],"type":["ValidationFn"]};

@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="This crate was developed with the intent of helping you to validate scientific tools; for exmple, for comparing the results of the temperature calculated by an algorithm and those measured in an experiment. It is supposed to be embedded the unit or integration testing."><meta name="keywords" content="rust, rustlang, rust-lang, validate"><title>validate - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../dark.css" disabled><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script src="../crates.js"></script><script defer src="../main.js"></script>
-    <noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="This crate was developed with the intent of helping you to validate scientific tools; for exmple, for comparing the results of the temperature calculated by an algorithm and those measured in an experiment. It is supposed to be embedded the unit or integration testing."><title>validate - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../static.files/ayu-be46fdc453a55015.css"><script src="../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>
 <script>
   "use strict";
@@ -33,105 +32,78 @@
   });
 </script>
 
-</head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../validate/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../validate/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"><a href="#">Crate validate</a></h2><div class="sidebar-elems"><div class="block"><ul><li class="version">Version 0.1.0</li><li><a id="all-types" href="all.html">All Items</a></li></div></ul><section><div class="block"><ul><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#attributes">Attribute Macros</a></li></ul></div></section><div id="sidebar-vars" data-name="validate" data-ty="mod" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../validate/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
-    <h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">validate</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/validate/lib.rs.html#21-440">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This crate was developed with the intent of helping you to validate scientific
+</head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="logo-container" href="../validate/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2></h2></nav><nav class="sidebar"><a class="logo-container" href="../validate/index.html"><img class="rust-logo" src="../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><h2 class="location"><a href="#">Crate validate</a></h2><div class="sidebar-elems"><ul class="block"><li class="version">Version 0.1.0</li><li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#attributes">Attribute Macros</a></li></ul></section></div></nav><main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">validate</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="srclink" href="../src/validate/lib.rs.html#21-441">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This crate was developed with the intent of helping you to validate scientific
 tools; for exmple, for comparing the results of the temperature calculated
 by an algorithm and those measured in an experiment. It is supposed to be embedded
 the unit or integration testing.</p>
-<p>Different Validation tasks can be created by implementing the <a href="trait.Validate.html" title="Validate"><code>Validate</code></a> trait.<br />
-These tasks will be stored into a <a href="struct.Validator.html" title="Validator"><code>Validator</code></a> object which will write a report
+<p>Different Validation tasks can be created by implementing the <a href="trait.Validate.html" title="trait validate::Validate"><code>Validate</code></a> trait.<br />
+These tasks will be stored into a <a href="struct.Validator.html" title="struct validate::Validator"><code>Validator</code></a> object which will write a report
 into an HTML File.</p>
 <h2 id="example"><a href="#example">Example</a></h2>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">validate</span>::{<span class="ident">valid</span>, <span class="ident">Validator</span>, <span class="ident">Validate</span>, <span class="ident">ValidationResult</span>};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>validate::{valid, Validator, Validate, ValidationResult};
 
 
-<span class="comment">// This checks that two numbers are equal</span>
-<span class="kw">struct</span> <span class="ident">CustomValidator</span> {
-    <span class="ident">expected</span>: <span class="ident">u8</span>,
-    <span class="ident">found</span>: <span class="ident">u8</span>,
-    <span class="ident">title</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+<span class="comment">// This checks that two numbers are equal
+</span><span class="kw">struct </span>CustomValidator {
+    expected: u8,
+    found: u8,
+    title: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
 }
 
-<span class="kw">impl</span> <span class="ident">Validate</span> <span class="kw">for</span> <span class="ident">CustomValidator</span> {
-    <span class="kw">fn</span> <span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>)-&gt;<span class="ident">ValidationResult</span>{
-        <span class="kw">let</span> <span class="ident">valid</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">expected</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">found</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">String::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="ident">String::new</span>();
+<span class="kw">impl </span>Validate <span class="kw">for </span>CustomValidator {
+    <span class="kw">fn </span>validate(<span class="kw-2">&amp;</span><span class="self">self</span>)-&gt;ValidationResult{
+        <span class="kw">let </span>valid = <span class="self">self</span>.expected == <span class="self">self</span>.found;
+        <span class="kw">let </span><span class="kw-2">mut </span>ret = String::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>err = String::new();
          
          
-        <span class="comment">// We return an error if the validation is not succesful, but we still</span>
-        <span class="comment">// write something into the report. Even if this particular Validation</span>
-        <span class="comment">// fails, the Validations object will run all the validations and print</span>
-        <span class="comment">// the error messages into the STDERR</span>
-        <span class="kw">if</span> <span class="ident">valid</span> {
-            <span class="ident">ret</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;## {}\n\n * Passed! {} and {} are equal&quot;</span>, <span class="self">self</span>.<span class="ident">title</span>, <span class="self">self</span>.<span class="ident">expected</span>, <span class="self">self</span>.<span class="ident">found</span>);
+        <span class="comment">// We return an error if the validation is not succesful, but we still
+        // write something into the report. Even if this particular Validation
+        // fails, the Validations object will run all the validations and print
+        // the error messages into the STDERR
+        </span><span class="kw">if </span>valid {
+            ret = <span class="macro">format!</span>(<span class="string">&quot;## {}\n\n * Passed! {} and {} are equal&quot;</span>, <span class="self">self</span>.title, <span class="self">self</span>.expected, <span class="self">self</span>.found);
         }<span class="kw">else</span>{
-            <span class="ident">err</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}\n{} and {} aren&#39;t equal&quot;</span>, <span class="ident">err</span>, <span class="self">self</span>.<span class="ident">expected</span>, <span class="self">self</span>.<span class="ident">found</span>);
-            <span class="ident">ret</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}\n\n# {}\n\n * Failed... {} and {} aren&#39;t equal&quot;</span>,<span class="ident">ret</span>, <span class="self">self</span>.<span class="ident">title</span>, <span class="self">self</span>.<span class="ident">expected</span>, <span class="self">self</span>.<span class="ident">found</span> );
+            err = <span class="macro">format!</span>(<span class="string">&quot;{}\n{} and {} aren&#39;t equal&quot;</span>, err, <span class="self">self</span>.expected, <span class="self">self</span>.found);
+            ret = <span class="macro">format!</span>(<span class="string">&quot;{}\n\n# {}\n\n * Failed... {} and {} aren&#39;t equal&quot;</span>,ret, <span class="self">self</span>.title, <span class="self">self</span>.expected, <span class="self">self</span>.found );
         };
-        <span class="kw">if</span> <span class="ident">err</span>.<span class="ident">len</span>()<span class="op">&gt;</span><span class="number">0</span>{
-            <span class="ident">ValidationResult::Err</span>(<span class="ident">err</span>, <span class="ident">ret</span>)
+        <span class="kw">if </span>err.len()&gt;<span class="number">0</span>{
+            ValidationResult::Err(err, ret)
         }<span class="kw">else</span>{
-            <span class="ident">ValidationResult::Ok</span>(<span class="ident">ret</span>)
+            ValidationResult::Ok(ret)
         }
     }
 }
 
-<span class="doccomment">/// Some explanation about the validation</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// It is always important to know what is it that we are validating</span>
-<span class="attribute">#[<span class="ident">valid</span>(<span class="prelude-val">Some</span> <span class="ident">Validation</span>)]</span>
-<span class="kw">fn</span> <span class="ident">check_if_equal</span>()-&gt;<span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Validate</span><span class="op">&gt;</span>{
-    <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">CustomValidator</span>{
-        <span class="ident">expected</span>: <span class="number">2</span>,
-        <span class="ident">found</span>: <span class="number">2</span>,
-        <span class="ident">title</span>: <span class="string">&quot;Check that 2 and 3 are equal&quot;</span>
-    };
-    <span class="ident">Box::new</span>(<span class="ident">v</span>) <span class="comment">// We need a Box.</span>
-}
- 
-<span class="comment">// Write a test</span>
-<span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_custon_validator</span>(){
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">validator</span> <span class="op">=</span> <span class="ident">Validator::new</span>(<span class="string">&quot;Test Validation&quot;</span>, <span class="string">&quot;report.html&quot;</span>);
-    <span class="ident">validator</span>.<span class="ident">push</span>(<span class="ident">check_if_equal</span>());
-    <span class="ident">validator</span>.<span class="ident">validate</span>().<span class="ident">unwrap</span>()
+<span class="doccomment">/// Some explanation about the validation
+///
+/// It is always important to know what is it that we are validating
+</span><span class="attr">#[valid(<span class="prelude-val">Some </span>Validation)]
+</span><span class="kw">fn </span>check_if_equal()-&gt;Box&lt;<span class="kw">dyn </span>Validate&gt;{
+    <span class="kw">let </span>v = CustomValidator{
+        expected: <span class="number">2</span>,
+        found: <span class="number">2</span>,
+        title: <span class="string">&quot;Check that 2 and 3 are equal&quot;
+    </span>};
+    Box::new(v) <span class="comment">// We need a Box.
+</span>}
+
+<span class="comment">// Write a test
+</span><span class="attr">#[test]
+</span><span class="kw">fn </span>test_custon_validator(){
+    <span class="kw">let </span><span class="kw-2">mut </span>validator = Validator::new(<span class="string">&quot;Test Validation&quot;</span>, <span class="string">&quot;report.html&quot;</span>);
+    validator.push(check_if_equal());
+    validator.validate().unwrap()
 }
 </code></pre></div>
-</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="scatter/index.html" title="validate::scatter mod">scatter</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="item-right docblock-short"><p>A Validator that creates a scatter plot from two datasets, indicating 
-the R-value and the linear equation fitting </p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="stats/index.html" title="validate::stats mod">stats</a></div><div class="item-right docblock-short"><p>Module with some useful functions for calculating
-indicators for validation (e.g., Mean Squared Error)</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="time_series/index.html" title="validate::time_series mod">time_series</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="item-right docblock-short"><p>A Validator that plots two time series and calculates—if required—the
-Root Mean Squared Error and Mean Bias Error between them.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="validator_wrapper/index.html" title="validate::validator_wrapper mod">validator_wrapper</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="item-right docblock-short"><p>A wrapper that contains an object that implements <a href="trait.Validate.html" title="Validate"><code>Validate</code></a></p>
-</div></div></div><h2 id="macros" class="small-section-header"><a href="#macros">Macros</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.assert_close.html" title="validate::assert_close macro">assert_close</a></div><div class="item-right docblock-short"><p>Asserts whether two numbers are close enough
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="numberish/index.html" title="mod validate::numberish">numberish</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="desc docblock-short">A trait defining some numerical-ish trait.</div></li><li><div class="item-name"><a class="mod" href="scatter/index.html" title="mod validate::scatter">scatter</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="desc docblock-short">A Validator that creates a scatter plot from two datasets, indicating
+the R-value and the linear equation fitting</div></li><li><div class="item-name"><a class="mod" href="stats/index.html" title="mod validate::stats">stats</a></div><div class="desc docblock-short">Module with some useful functions for calculating
+indicators for validation (e.g., Mean Squared Error)</div></li><li><div class="item-name"><a class="mod" href="time_series/index.html" title="mod validate::time_series">time_series</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="desc docblock-short">A Validator that plots two time series and calculates—if required—the
+Root Mean Squared Error and Mean Bias Error between them.</div></li><li><div class="item-name"><a class="mod" href="validator_wrapper/index.html" title="mod validate::validator_wrapper">validator_wrapper</a><span title="Restricted Visibility">&nbsp;🔒</span> </div><div class="desc docblock-short">A wrapper that contains an object that implements <a href="trait.Validate.html" title="trait validate::Validate"><code>Validate</code></a></div></li></ul><h2 id="macros" class="small-section-header"><a href="#macros">Macros</a></h2><ul class="item-table"><li><div class="item-name"><a class="macro" href="macro.assert_close.html" title="macro validate::assert_close">assert_close</a></div><div class="desc docblock-short">Asserts whether two numbers are close enough
 by comparing the first argument with the second, and
-the threshold being the third.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.assert_not_close.html" title="validate::assert_not_close macro">assert_not_close</a></div><div class="item-right docblock-short"><p>Asserts whether two numbers are close enough</p>
-</div></div></div><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ScatterValidator.html" title="validate::ScatterValidator struct">ScatterValidator</a></div><div class="item-right docblock-short"><p>Validates a time series based on Mean Bias Error and Root Mean Squared Error</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.SeriesValidator.html" title="validate::SeriesValidator struct">SeriesValidator</a></div><div class="item-right docblock-short"><p>Validates a time series based on Mean Bias Error and Root Mean Squared Error</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Validator.html" title="validate::Validator struct">Validator</a></div><div class="item-right docblock-short"><p>This structure holds a number of validations to be ran, runs them,
+the threshold being the third.</div></li><li><div class="item-name"><a class="macro" href="macro.assert_not_close.html" title="macro validate::assert_not_close">assert_not_close</a></div><div class="desc docblock-short">Asserts whether two numbers are close enough</div></li></ul><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.ScatterValidator.html" title="struct validate::ScatterValidator">ScatterValidator</a></div><div class="desc docblock-short">Validates a time series based on Mean Bias Error and Root Mean Squared Error</div></li><li><div class="item-name"><a class="struct" href="struct.SeriesValidator.html" title="struct validate::SeriesValidator">SeriesValidator</a></div><div class="desc docblock-short">Validates a time series based on Mean Bias Error and Root Mean Squared Error</div></li><li><div class="item-name"><a class="struct" href="struct.Validator.html" title="struct validate::Validator">Validator</a></div><div class="desc docblock-short">This structure holds a number of validations to be ran, runs them,
 and writes the results into an HTML report. It has a title, which is used
-as a Header in its report.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.ValidatorWrapper.html" title="validate::ValidatorWrapper struct">ValidatorWrapper</a></div><div class="item-right docblock-short"><p>A wrapper that contains an object that implements <a href="trait.Validate.html" title="Validate"><code>Validate</code></a></p>
-</div></div></div><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.ValidationResult.html" title="validate::ValidationResult enum">ValidationResult</a></div><div class="item-right docblock-short"><p>Implements a validation error, where
+as a Header in its report.</div></li><li><div class="item-name"><a class="struct" href="struct.ValidatorWrapper.html" title="struct validate::ValidatorWrapper">ValidatorWrapper</a></div><div class="desc docblock-short">A wrapper that contains an object that implements <a href="trait.Validate.html" title="trait validate::Validate"><code>Validate</code></a></div></li></ul><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.ValidationResult.html" title="enum validate::ValidationResult">ValidationResult</a></div><div class="desc docblock-short">Implements a validation error, where
 <code>Ok</code> returns just the text to write in the report,
-but <code>Err</code> returns not only that but also an error message</p>
-</div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Validate.html" title="validate::Validate trait">Validate</a></div><div class="item-right docblock-short"><p>The main trait of this crate. All validator modules need
-to comply with this trait.</p>
-</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.from_csv.html" title="validate::from_csv fn">from_csv</a></div><div class="item-right docblock-short"><p>Reads a number of columns from a CSV, transforms them into f64</p>
-</div></div></div><h2 id="attributes" class="small-section-header"><a href="#attributes">Attribute Macros</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="attr" href="attr.valid.html" title="validate::valid attr">valid</a></div><div class="item-right docblock-short"><p>An Attribute MAcro</p>
-</div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="validate" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0 (a8314ef7d 2022-06-27)" ></div>
-</body></html>
+but <code>Err</code> returns not only that but also an error message</div></li></ul><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.Validate.html" title="trait validate::Validate">Validate</a></div><div class="desc docblock-short">The main trait of this crate. All validator modules need
+to comply with this trait.</div></li></ul><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2><ul class="item-table"><li><div class="item-name"><a class="fn" href="fn.from_csv.html" title="fn validate::from_csv">from_csv</a></div><div class="desc docblock-short">Reads a number of columns from a CSV, transforms them into f64</div></li></ul><h2 id="attributes" class="small-section-header"><a href="#attributes">Attribute Macros</a></h2><ul class="item-table"><li><div class="item-name"><a class="attr" href="attr.valid.html" title="attr validate::valid">valid</a></div><div class="desc docblock-short">An Attribute MAcro</div></li></ul></section></div></main><div id="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="validate" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
