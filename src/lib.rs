@@ -90,6 +90,7 @@ SOFTWARE.
 //!
 //! ```
 
+use numberish::Numberish;
 use pulldown_cmark::{html, Options, Parser};
 use std::fs;
 use std::{fs::File, io::Write};
@@ -372,11 +373,11 @@ pub trait Validate {
 }
 
 /// Reads a number of columns from a CSV, transforms them into f64
-pub fn from_csv(path: &str, cols: &[usize]) -> Vec<Vec<f64>> {
+pub fn from_csv<T : Numberish>(path: &str, cols: &[usize]) -> Vec<Vec<T>> {
     let reader = File::open(path).unwrap();
     let mut rdr = csv::Reader::from_reader(reader);
 
-    let mut ret: Vec<Vec<f64>> = Vec::with_capacity(cols.len());
+    let mut ret: Vec<Vec<T>> = Vec::with_capacity(cols.len());
     for _ in cols {
         ret.push(Vec::new());
     }
@@ -385,8 +386,8 @@ pub fn from_csv(path: &str, cols: &[usize]) -> Vec<Vec<f64>> {
         let data = record.unwrap();
 
         for (i, col) in cols.iter().enumerate() {
-            let v = &data[*col].trim();
-            let v = v.parse::<f64>().unwrap();
+            let v = data[*col].trim();
+            let v: T = v.parse::<f32>().unwrap().into();
             ret[i].push(v);
         }
     }
@@ -404,7 +405,7 @@ mod tests {
 
     #[test]
     fn test_from_csv() {
-        let data = from_csv("./tests/test_data/data.csv", &vec![0, 1, 2, 3]);
+        let data = from_csv::<f64>("./tests/test_data/data.csv", &vec![0, 1, 2, 3]);
         for c in 0..4 {
             let d = &data[c];
             assert_eq!(d.len(), 3);
