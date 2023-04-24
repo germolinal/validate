@@ -473,6 +473,7 @@
 <a href="#439" id="439">439</a>
 <a href="#440" id="440">440</a>
 <a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -565,7 +566,8 @@ SOFTWARE.
 //!
 //! ```
 
-</span><span class="kw">use </span>pulldown_cmark::{html, Options, Parser};
+</span><span class="kw">use </span>numberish::Numberish;
+<span class="kw">use </span>pulldown_cmark::{html, Options, Parser};
 <span class="kw">use </span>std::fs;
 <span class="kw">use </span>std::{fs::File, io::Write};
 
@@ -847,11 +849,11 @@ SOFTWARE.
 }
 
 <span class="doccomment">/// Reads a number of columns from a CSV, transforms them into f64
-</span><span class="kw">pub fn </span>from_csv(path: <span class="kw-2">&amp;</span>str, cols: <span class="kw-2">&amp;</span>[usize]) -&gt; Vec&lt;Vec&lt;f64&gt;&gt; {
+</span><span class="kw">pub fn </span>from_csv&lt;T : Numberish&gt;(path: <span class="kw-2">&amp;</span>str, cols: <span class="kw-2">&amp;</span>[usize]) -&gt; Vec&lt;Vec&lt;T&gt;&gt; {
     <span class="kw">let </span>reader = File::open(path).unwrap();
     <span class="kw">let </span><span class="kw-2">mut </span>rdr = csv::Reader::from_reader(reader);
 
-    <span class="kw">let </span><span class="kw-2">mut </span>ret: Vec&lt;Vec&lt;f64&gt;&gt; = Vec::with_capacity(cols.len());
+    <span class="kw">let </span><span class="kw-2">mut </span>ret: Vec&lt;Vec&lt;T&gt;&gt; = Vec::with_capacity(cols.len());
     <span class="kw">for _ in </span>cols {
         ret.push(Vec::new());
     }
@@ -860,8 +862,8 @@ SOFTWARE.
         <span class="kw">let </span>data = record.unwrap();
 
         <span class="kw">for </span>(i, col) <span class="kw">in </span>cols.iter().enumerate() {
-            <span class="kw">let </span>v = <span class="kw-2">&amp;</span>data[<span class="kw-2">*</span>col].trim();
-            <span class="kw">let </span>v = v.parse::&lt;f64&gt;().unwrap();
+            <span class="kw">let </span>v = data[<span class="kw-2">*</span>col].trim();
+            <span class="kw">let </span>v: T = v.parse::&lt;f32&gt;().unwrap().into();
             ret[i].push(v);
         }
     }
@@ -879,7 +881,7 @@ SOFTWARE.
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_from_csv() {
-        <span class="kw">let </span>data = from_csv(<span class="string">&quot;./tests/test_data/data.csv&quot;</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
+        <span class="kw">let </span>data = from_csv::&lt;f64&gt;(<span class="string">&quot;./tests/test_data/data.csv&quot;</span>, <span class="kw-2">&amp;</span><span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
         <span class="kw">for </span>c <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
             <span class="kw">let </span>d = <span class="kw-2">&amp;</span>data[c];
             <span class="macro">assert_eq!</span>(d.len(), <span class="number">3</span>);
