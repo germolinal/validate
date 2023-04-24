@@ -20,11 +20,13 @@ SOFTWARE.
 
 use crate::Validate;
 use crate::ValidationResult;
+use crate::numberish::Numberish;
+use crate::stats::try_into_t;
 use poloto::prelude::*;
 
 /// Validates a time series based on Mean Bias Error and Root Mean Squared Error
 #[derive(Default, Clone)]
-pub struct SeriesValidator {
+pub struct SeriesValidator<T: Numberish> {
     /// The maximum allowed Mean Bias Error
     pub allowed_mean_bias_error: Option<f64>,
 
@@ -47,19 +49,19 @@ pub struct SeriesValidator {
     pub expected_legend: Option<&'static str>,
 
     /// The time series containing the expected values
-    pub expected: Vec<f64>,
+    pub expected: Vec<T>,
 
     /// The name of the `found` time series
     pub found_legend: Option<&'static str>,
 
     /// The time series containing the found values
-    pub found: Vec<f64>,
+    pub found: Vec<T>,
 
     /// the title of the chart
     pub chart_title: Option<&'static str>,
 }
 
-impl Validate for SeriesValidator {
+impl <T: Numberish>Validate for SeriesValidator<T> {
     fn validate(&self) -> ValidationResult {
         let mut err_msg = String::new();
 
@@ -72,15 +74,17 @@ impl Validate for SeriesValidator {
             return ValidationResult::Err(err_msg.clone(), err_msg);
         }
 
-        let n = self.expected.len() as f64;
+        
+        let n : T = try_into_t(self.expected.len());
+
         let num = self.expected.len();
 
-        let mean_bias_error: f64 = crate::stats::mean_bias_error(&self.expected, &self.found);
+        let mean_bias_error = crate::stats::mean_bias_error(&self.expected, &self.found);
         let mut mbe_msg = format!(" * Mean Bias Error: {:.2}", mean_bias_error);
 
         // Process Root Mean Squared Error
         let root_mean_squared_error =
-            crate::stats::root_mean_squared_error(&self.expected, &self.found);
+            crate::stats::root_mean_squared_error(&self.expected, &self.found);        
         let mut rmse_msg = format!(" * Root Mean Squared Error: {:.2}", root_mean_squared_error);
 
         // Check compliance
@@ -106,13 +110,13 @@ impl Validate for SeriesValidator {
         }
 
         let exp_legend = self.expected_legend.unwrap_or("Expected");
-        let line_expected = poloto::range_iter([0.0, n], num)
-            .zip_output(|i| self.expected[i as usize])
+        let line_expected = poloto::range_iter([0.0, n.into()], num)
+            .zip_output(|i| self.expected[i as usize].into())
             .buffered_plot()
             .line(exp_legend);
         let found_legend = self.found_legend.unwrap_or("Found");
-        let line_found = poloto::range_iter([0.0, n], num)
-            .zip_output(|i| self.found[i as usize])
+        let line_found = poloto::range_iter([0.0, n.into()], num)
+            .zip_output(|i| self.found[i as usize].into())
             .buffered_plot()
             .line(found_legend);
         let origin = poloto::build::origin();

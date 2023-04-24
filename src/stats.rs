@@ -20,6 +20,15 @@ SOFTWARE.
 
 use crate::numberish::Numberish;
 
+/// Attempts transform a `usize` into a generic parameter `T`.
+/// Panics if the usize is too large
+pub(crate) fn try_into_t<T: Numberish>(n_usize: usize) -> T {    
+    if n_usize > i32::MAX as usize {
+        panic!("Too many samples")
+    }
+    (n_usize as i32).into()
+}
+
 /// Calculates the maximum and minimum in a series.
 ///
 /// # Example
@@ -84,11 +93,11 @@ pub fn min_max<T: Numberish>(x: &[T]) -> (T, T) {
 /// # Panics
 ///
 /// * If the dataset is empty
-pub fn mean(x: &[f64]) -> f64 {
+pub fn mean<T: Numberish>(x: &[T]) -> f64 {
     assert_ne!(x.len(), 0, "Trying to calculate mean of empty dataset");
-    let n = x.len() as f64;
+    let n : f64 = try_into_t(x.len());
 
-    let s: f64 = x.iter().sum();
+    let s: f64 = x.iter().fold(0.0, |acc, item| acc + (*item).into());
     s / n
 }
 
@@ -119,7 +128,7 @@ pub fn mean(x: &[f64]) -> f64 {
 ///
 /// * Panics if the datasets `x` and `y` are of different lengths
 /// * If the datasets are empty
-pub fn linear_coefficients<T: Numberish>(x: &[T], y: &[T]) -> (T, T, T) {
+pub fn linear_coefficients<T: Numberish>(x: &[T], y: &[T]) -> (f64, f64, f64) {
     assert_eq!(x.len(), y.len(), "Calculating linear coefficients of two datasets of different length. x.len() = {}, y.len = {}", x.len(), y.len());
     assert_ne!(
         x.len(),
@@ -127,28 +136,28 @@ pub fn linear_coefficients<T: Numberish>(x: &[T], y: &[T]) -> (T, T, T) {
         "Trying to calculate linear coefficients of empty datasets"
     );
 
-    let n_usize = x.len();
+    let n : f64 = try_into_t(x.len());    
 
-    if n_usize > i32::MAX as usize {
-        panic!("Too many samples")
-    }
-    let n = (n_usize as i32).into();
-
-    let ss_x: T = x.iter().fold(T::zero(), |acc, &item| acc + item);
-    let ss_xx: T = x
+    let ss_x: f64 = x.iter().fold(0.0, |acc, &item| acc + item.into());
+    let ss_xx: f64 = x
         .iter()
         .map(|x| *x * *x)
-        .fold(T::zero(), |acc, item| acc + item);
-    let ss_y: T = y.iter().fold(T::zero(), |acc, &item| acc + item);
-    let ss_yy: T = y
+        .fold(0.0, |acc, item| acc + item.into());
+
+    let ss_y: f64 = y
+        .iter()
+        .fold(0.0, |acc, &item| acc + item.into());
+
+    let ss_yy: f64 = y
         .iter()
         .map(|y| *y * *y)
-        .fold(T::zero(), |acc, item| acc + item);
-    let ss_xy: T = x
+        .fold(0.0, |acc, item| acc + item.into());
+
+    let ss_xy: f64 = x
         .iter()
         .zip(y.iter())
         .map(|(x, y)| *x * *y)
-        .fold(T::zero(), |acc, item| acc + item);
+        .fold(0.0, |acc, item| acc + item.into());
 
     let b = (ss_xy - ss_x * ss_y / n) / (ss_xx - ss_x * ss_x / n);
     let a = (ss_y - b * ss_x) / n;
@@ -199,16 +208,17 @@ pub fn linear_coefficients<T: Numberish>(x: &[T], y: &[T]) -> (T, T, T) {
 ///
 /// * Panics if the datasets `x` and `y` are of different lengths
 /// * If the datasets are empty
-pub fn root_mean_squared_error(x: &[f64], y: &[f64]) -> f64 {
+pub fn root_mean_squared_error<T: Numberish>(x: &[T], y: &[T]) -> f64 {
     assert_eq!(x.len(), y.len(), "Calculating Root Mean Squared Error of two datasets of different length. x.len() = {}, y.len = {}", x.len(), y.len());
     assert_ne!(
         x.len(),
         0,
         "Trying to calculate Root Mean Squared Error of empty datasets"
     );
-    let n = x.len() as f64;
-    let squared_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| (*y - *x).powi(2)).sum();
-    (squared_error / n).sqrt()
+    let n : T = try_into_t(x.len());    
+
+    let squared_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| (*y - *x)*(*y - *x)).fold(0.0, |acc, item| acc + item.into());
+    squared_error / n.into()
 }
 
 /// Calculates the Mean Bias Error between to datasets, indicating whether
@@ -249,7 +259,7 @@ pub fn root_mean_squared_error(x: &[f64], y: &[f64]) -> f64 {
 ///
 /// * Panics if the datasets `x` and `y` are of different lengths
 /// * If the datasets are empty
-pub fn mean_bias_error(x: &[f64], y: &[f64]) -> f64 {
+pub fn mean_bias_error<T: Numberish>(x: &[T], y: &[T]) -> f64 {
     assert_eq!(
         x.len(),
         y.len(),
@@ -263,7 +273,7 @@ pub fn mean_bias_error(x: &[f64], y: &[f64]) -> f64 {
         "Trying to calculate Mean Bias Error of empty datasets"
     );
 
-    let n = x.len() as f64;
-    let bias_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| *y - *x).sum();
+    let n : f64 = try_into_t(x.len());    
+    let bias_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| *y - *x).fold(0.0, |acc, item| acc + item.into());
     bias_error / n
 }

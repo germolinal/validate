@@ -72,7 +72,7 @@ impl <T: Numberish>Validate for ScatterValidator<T> {
             if i == 0 {
                 [0., a.into()]
             } else if i == 1 {
-                [max_x.into(), (a + max_x * b).into()]
+                [max_x.into(), (a + max_x.into() * b).into()]
             } else {
                 unreachable!();
             }
