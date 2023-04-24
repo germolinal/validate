@@ -311,6 +311,8 @@
 <a href="#277" id="277">277</a>
 <a href="#278" id="278">278</a>
 <a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -335,9 +337,9 @@ SOFTWARE.
 
 <span class="doccomment">/// Attempts transform a `usize` into a generic parameter `T`.
 /// Panics if the usize is too large
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>try_into_t&lt;T: Numberish&gt;(n_usize: usize) -&gt; T {    
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>try_into_t(n_usize: usize) -&gt; f64 {    
     <span class="kw">if </span>n_usize &gt; i32::MAX <span class="kw">as </span>usize {
-        <span class="macro">panic!</span>(<span class="string">&quot;Too many samples&quot;</span>)
+        <span class="macro">panic!</span>(<span class="string">&quot;Too many samples... the limit is {}&quot;</span>, i32::MAX)
     }
     (n_usize <span class="kw">as </span>i32).into()
 }
@@ -408,7 +410,9 @@ SOFTWARE.
 /// * If the dataset is empty
 </span><span class="kw">pub fn </span>mean&lt;T: Numberish&gt;(x: <span class="kw-2">&amp;</span>[T]) -&gt; f64 {
     <span class="macro">assert_ne!</span>(x.len(), <span class="number">0</span>, <span class="string">&quot;Trying to calculate mean of empty dataset&quot;</span>);
-    <span class="kw">let </span>n : f64 = try_into_t(x.len());
+    <span class="kw">let </span>n  = try_into_t(x.len());
+
+    
 
     <span class="kw">let </span>s: f64 = x.iter().fold(<span class="number">0.0</span>, |acc, item| acc + (<span class="kw-2">*</span>item).into());
     s / n
@@ -449,7 +453,7 @@ SOFTWARE.
         <span class="string">&quot;Trying to calculate linear coefficients of empty datasets&quot;
     </span>);
 
-    <span class="kw">let </span>n : f64 = try_into_t(x.len());    
+    <span class="kw">let </span>n  = try_into_t(x.len());    
 
     <span class="kw">let </span>ss_x: f64 = x.iter().fold(<span class="number">0.0</span>, |acc, <span class="kw-2">&amp;</span>item| acc + item.into());
     <span class="kw">let </span>ss_xx: f64 = x
@@ -528,10 +532,10 @@ SOFTWARE.
         <span class="number">0</span>,
         <span class="string">&quot;Trying to calculate Root Mean Squared Error of empty datasets&quot;
     </span>);
-    <span class="kw">let </span>n : T = try_into_t(x.len());    
+    <span class="kw">let </span>n  = try_into_t(x.len());    
 
     <span class="kw">let </span>squared_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| (<span class="kw-2">*</span>y - <span class="kw-2">*</span>x)<span class="kw-2">*</span>(<span class="kw-2">*</span>y - <span class="kw-2">*</span>x)).fold(<span class="number">0.0</span>, |acc, item| acc + item.into());
-    squared_error / n.into()
+    squared_error / n
 }
 
 <span class="doccomment">/// Calculates the Mean Bias Error between to datasets, indicating whether
@@ -586,7 +590,7 @@ SOFTWARE.
         <span class="string">&quot;Trying to calculate Mean Bias Error of empty datasets&quot;
     </span>);
 
-    <span class="kw">let </span>n : f64 = try_into_t(x.len());    
+    <span class="kw">let </span>n  = try_into_t(x.len());    
     <span class="kw">let </span>bias_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| <span class="kw-2">*</span>y - <span class="kw-2">*</span>x).fold(<span class="number">0.0</span>, |acc, item| acc + item.into());
     bias_error / n
 }

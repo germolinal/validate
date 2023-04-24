@@ -265,7 +265,7 @@ SOFTWARE.
         }
 
         
-        <span class="kw">let </span>n : T = try_into_t(<span class="self">self</span>.expected.len());
+         <span class="kw">let </span>n = try_into_t(<span class="self">self</span>.expected.len());
 
         <span class="kw">let </span>num = <span class="self">self</span>.expected.len();
 
@@ -300,12 +300,12 @@ SOFTWARE.
         }
 
         <span class="kw">let </span>exp_legend = <span class="self">self</span>.expected_legend.unwrap_or(<span class="string">&quot;Expected&quot;</span>);
-        <span class="kw">let </span>line_expected = poloto::range_iter([<span class="number">0.0</span>, n.into()], num)
+        <span class="kw">let </span>line_expected = poloto::range_iter([<span class="number">0.0</span>, n], num)
             .zip_output(|i| <span class="self">self</span>.expected[i <span class="kw">as </span>usize].into())
             .buffered_plot()
             .line(exp_legend);
         <span class="kw">let </span>found_legend = <span class="self">self</span>.found_legend.unwrap_or(<span class="string">&quot;Found&quot;</span>);
-        <span class="kw">let </span>line_found = poloto::range_iter([<span class="number">0.0</span>, n.into()], num)
+        <span class="kw">let </span>line_found = poloto::range_iter([<span class="number">0.0</span>, n], num)
             .zip_output(|i| <span class="self">self</span>.found[i <span class="kw">as </span>usize].into())
             .buffered_plot()
             .line(found_legend);
