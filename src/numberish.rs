@@ -214,7 +214,7 @@ pub trait Numberish:
     + core::fmt::Debug
     + PartialOrd
     + From<f32>
-    + From<i32>
+    // + From<i32>
     + Into<f64>
 {
 }
@@ -243,7 +243,7 @@ impl<
             + core::fmt::Debug
             + PartialOrd
             + From<f32>
-            + From<i32>
+            // + From<i32>
             + Into<f64>,
     > Numberish for T
 {

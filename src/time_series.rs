@@ -75,7 +75,7 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
         }
 
         
-        let n : T = try_into_t(self.expected.len());
+         let n = try_into_t(self.expected.len());
 
         let num = self.expected.len();
 
@@ -110,12 +110,12 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
         }
 
         let exp_legend = self.expected_legend.unwrap_or("Expected");
-        let line_expected = poloto::range_iter([0.0, n.into()], num)
+        let line_expected = poloto::range_iter([0.0, n], num)
             .zip_output(|i| self.expected[i as usize].into())
             .buffered_plot()
             .line(exp_legend);
         let found_legend = self.found_legend.unwrap_or("Found");
-        let line_found = poloto::range_iter([0.0, n.into()], num)
+        let line_found = poloto::range_iter([0.0, n], num)
             .zip_output(|i| self.found[i as usize].into())
             .buffered_plot()
             .line(found_legend);
