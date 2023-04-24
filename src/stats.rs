@@ -18,6 +18,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+use crate::numberish::Numberish;
+
 /// Calculates the maximum and minimum in a series.
 ///
 /// # Example
@@ -35,18 +37,18 @@ SOFTWARE.
 ///
 /// * if the dataset is empty
 /// * If there are any `NaN` in the dataset
-pub fn min_max(x: &[f64]) -> (f64, f64) {
+pub fn min_max<T: Numberish>(x: &[T]) -> (T, T) {
     assert_ne!(
         x.len(),
         0,
         "Trying to calculate Max and Min of empty dataset"
     );
 
-    let mut max = f64::MIN;
-    let mut min = f64::MAX;
+    let mut max: T = f32::MIN.into();
+    let mut min: T = f32::MAX.into();
     for v in x {
         assert!(
-            !v.is_nan(),
+            !v.is_it_nan(),
             "Found NaN when calculating min and max of dataset"
         );
         if *v < min {
@@ -117,7 +119,7 @@ pub fn mean(x: &[f64]) -> f64 {
 ///
 /// * Panics if the datasets `x` and `y` are of different lengths
 /// * If the datasets are empty
-pub fn linear_coefficients(x: &[f64], y: &[f64]) -> (f64, f64, f64) {
+pub fn linear_coefficients<T: Numberish>(x: &[T], y: &[T]) -> (T, T, T) {
     assert_eq!(x.len(), y.len(), "Calculating linear coefficients of two datasets of different length. x.len() = {}, y.len = {}", x.len(), y.len());
     assert_ne!(
         x.len(),
@@ -125,18 +127,33 @@ pub fn linear_coefficients(x: &[f64], y: &[f64]) -> (f64, f64, f64) {
         "Trying to calculate linear coefficients of empty datasets"
     );
 
-    let n = x.len() as f64;
+    let n_usize = x.len();
 
-    let ss_x: f64 = x.iter().sum();
-    let ss_xx: f64 = x.iter().map(|x| x * x).sum();
-    let ss_y: f64 = y.iter().sum();
-    let ss_yy: f64 = y.iter().map(|y| y * y).sum();
-    let ss_xy: f64 = x.iter().zip(y.iter()).map(|(x, y)| *x * *y).sum();
+    if n_usize > i32::MAX as usize {
+        panic!("Too many samples")
+    }
+    let n = (n_usize as i32).into();
+
+    let ss_x: T = x.iter().fold(T::zero(), |acc, &item| acc + item);
+    let ss_xx: T = x
+        .iter()
+        .map(|x| *x * *x)
+        .fold(T::zero(), |acc, item| acc + item);
+    let ss_y: T = y.iter().fold(T::zero(), |acc, &item| acc + item);
+    let ss_yy: T = y
+        .iter()
+        .map(|y| *y * *y)
+        .fold(T::zero(), |acc, item| acc + item);
+    let ss_xy: T = x
+        .iter()
+        .zip(y.iter())
+        .map(|(x, y)| *x * *y)
+        .fold(T::zero(), |acc, item| acc + item);
 
     let b = (ss_xy - ss_x * ss_y / n) / (ss_xx - ss_x * ss_x / n);
     let a = (ss_y - b * ss_x) / n;
-    let rsquared =
-        (n * ss_xy - ss_x * ss_y).powi(2) / ((n * ss_xx - ss_x * ss_x) * (n * ss_yy - ss_y * ss_y));
+    let rsquared = (n * ss_xy - ss_x * ss_y) * (n * ss_xy - ss_x * ss_y)
+        / ((n * ss_xx - ss_x * ss_x) * (n * ss_yy - ss_y * ss_y));
 
     // let rsquared = 1.;
     (a, b, rsquared)

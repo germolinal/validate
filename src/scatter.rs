@@ -20,11 +20,12 @@ SOFTWARE.
 
 use crate::Validate;
 use crate::ValidationResult;
+use crate::numberish::Numberish;
 use poloto::prelude::*;
 
 /// Validates a time series based on Mean Bias Error and Root Mean Squared Error
 #[derive(Default, Clone)]
-pub struct ScatterValidator {
+pub struct ScatterValidator<T> {
     /// The units in the x and y axis of the chart (they are supposed to be the same)
     pub units: Option<&'static str>,
 
@@ -32,19 +33,19 @@ pub struct ScatterValidator {
     pub expected_legend: Option<&'static str>,
 
     /// The time series containing the expected values
-    pub expected: Vec<f64>,
+    pub expected: Vec<T>,
 
     /// The name of the `found` time series
     pub found_legend: Option<&'static str>,
 
     /// The time series containing the found values
-    pub found: Vec<f64>,
+    pub found: Vec<T>,
 
     /// the title of the chart
     pub chart_title: Option<&'static str>,
 }
 
-impl Validate for ScatterValidator {
+impl <T: Numberish>Validate for ScatterValidator<T> {
     fn validate(&self) -> ValidationResult {
         let mut err_msg = String::new();
 
@@ -57,10 +58,10 @@ impl Validate for ScatterValidator {
             return ValidationResult::Err(err_msg.clone(), err_msg);
         }
 
-        let (a, b, r2) = crate::stats::linear_coefficients(&self.expected, &self.found);
+        let (a, b, r2) = crate::stats::linear_coefficients(self.expected.as_slice(), self.found.as_slice());
 
         let n = self.expected.len();
-        let data = |i: usize| [self.expected[i], self.found[i]];
+        let data = |i: usize| [self.expected[i].into(), self.found[i].into()];
 
         let exp_legend = self.expected_legend.unwrap_or("Expected");
         let found_legend = self.found_legend.unwrap_or("Found");
@@ -69,9 +70,9 @@ impl Validate for ScatterValidator {
         let (.., max_x) = crate::stats::min_max(&self.expected);
         let fit = |i: usize| {
             if i == 0 {
-                [0., a]
+                [0., a.into()]
             } else if i == 1 {
-                [max_x, a + max_x * b]
+                [max_x.into(), (a + max_x * b).into()]
             } else {
                 unreachable!();
             }
@@ -81,9 +82,9 @@ impl Validate for ScatterValidator {
 
         let exp_fit = |i: usize| {
             if i == 0 {
-                [0., 0.]
+                [0.0.into(), 0.0.into()]
             } else if i == 1 {
-                [max_x, max_x]
+                [max_x.into(), max_x.into()]
             } else {
                 unreachable!();
             }

@@ -100,6 +100,9 @@ pub use derive::valid;
 mod validator_wrapper;
 pub use validator_wrapper::ValidatorWrapper;
 
+/// A trait defining some numerical-ish trait.
+mod numberish;
+
 /// A Validator that plots two time series and calculates—if required—the
 /// Root Mean Squared Error and Mean Bias Error between them.
 ///
