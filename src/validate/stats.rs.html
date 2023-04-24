@@ -301,6 +301,16 @@
 <a href="#267" id="267">267</a>
 <a href="#268" id="268">268</a>
 <a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -322,6 +332,15 @@ SOFTWARE.
 */
 
 </span><span class="kw">use </span><span class="kw">crate</span>::numberish::Numberish;
+
+<span class="doccomment">/// Attempts transform a `usize` into a generic parameter `T`.
+/// Panics if the usize is too large
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>try_into_t&lt;T: Numberish&gt;(n_usize: usize) -&gt; T {    
+    <span class="kw">if </span>n_usize &gt; i32::MAX <span class="kw">as </span>usize {
+        <span class="macro">panic!</span>(<span class="string">&quot;Too many samples&quot;</span>)
+    }
+    (n_usize <span class="kw">as </span>i32).into()
+}
 
 <span class="doccomment">/// Calculates the maximum and minimum in a series.
 ///
@@ -387,11 +406,11 @@ SOFTWARE.
 /// # Panics
 ///
 /// * If the dataset is empty
-</span><span class="kw">pub fn </span>mean(x: <span class="kw-2">&amp;</span>[f64]) -&gt; f64 {
+</span><span class="kw">pub fn </span>mean&lt;T: Numberish&gt;(x: <span class="kw-2">&amp;</span>[T]) -&gt; f64 {
     <span class="macro">assert_ne!</span>(x.len(), <span class="number">0</span>, <span class="string">&quot;Trying to calculate mean of empty dataset&quot;</span>);
-    <span class="kw">let </span>n = x.len() <span class="kw">as </span>f64;
+    <span class="kw">let </span>n : f64 = try_into_t(x.len());
 
-    <span class="kw">let </span>s: f64 = x.iter().sum();
+    <span class="kw">let </span>s: f64 = x.iter().fold(<span class="number">0.0</span>, |acc, item| acc + (<span class="kw-2">*</span>item).into());
     s / n
 }
 
@@ -422,7 +441,7 @@ SOFTWARE.
 ///
 /// * Panics if the datasets `x` and `y` are of different lengths
 /// * If the datasets are empty
-</span><span class="kw">pub fn </span>linear_coefficients&lt;T: Numberish&gt;(x: <span class="kw-2">&amp;</span>[T], y: <span class="kw-2">&amp;</span>[T]) -&gt; (T, T, T) {
+</span><span class="kw">pub fn </span>linear_coefficients&lt;T: Numberish&gt;(x: <span class="kw-2">&amp;</span>[T], y: <span class="kw-2">&amp;</span>[T]) -&gt; (f64, f64, f64) {
     <span class="macro">assert_eq!</span>(x.len(), y.len(), <span class="string">&quot;Calculating linear coefficients of two datasets of different length. x.len() = {}, y.len = {}&quot;</span>, x.len(), y.len());
     <span class="macro">assert_ne!</span>(
         x.len(),
@@ -430,28 +449,28 @@ SOFTWARE.
         <span class="string">&quot;Trying to calculate linear coefficients of empty datasets&quot;
     </span>);
 
-    <span class="kw">let </span>n_usize = x.len();
+    <span class="kw">let </span>n : f64 = try_into_t(x.len());    
 
-    <span class="kw">if </span>n_usize &gt; i32::MAX <span class="kw">as </span>usize {
-        <span class="macro">panic!</span>(<span class="string">&quot;Too many samples&quot;</span>)
-    }
-    <span class="kw">let </span>n = (n_usize <span class="kw">as </span>i32).into();
-
-    <span class="kw">let </span>ss_x: T = x.iter().fold(T::zero(), |acc, <span class="kw-2">&amp;</span>item| acc + item);
-    <span class="kw">let </span>ss_xx: T = x
+    <span class="kw">let </span>ss_x: f64 = x.iter().fold(<span class="number">0.0</span>, |acc, <span class="kw-2">&amp;</span>item| acc + item.into());
+    <span class="kw">let </span>ss_xx: f64 = x
         .iter()
         .map(|x| <span class="kw-2">*</span>x * <span class="kw-2">*</span>x)
-        .fold(T::zero(), |acc, item| acc + item);
-    <span class="kw">let </span>ss_y: T = y.iter().fold(T::zero(), |acc, <span class="kw-2">&amp;</span>item| acc + item);
-    <span class="kw">let </span>ss_yy: T = y
+        .fold(<span class="number">0.0</span>, |acc, item| acc + item.into());
+
+    <span class="kw">let </span>ss_y: f64 = y
+        .iter()
+        .fold(<span class="number">0.0</span>, |acc, <span class="kw-2">&amp;</span>item| acc + item.into());
+
+    <span class="kw">let </span>ss_yy: f64 = y
         .iter()
         .map(|y| <span class="kw-2">*</span>y * <span class="kw-2">*</span>y)
-        .fold(T::zero(), |acc, item| acc + item);
-    <span class="kw">let </span>ss_xy: T = x
+        .fold(<span class="number">0.0</span>, |acc, item| acc + item.into());
+
+    <span class="kw">let </span>ss_xy: f64 = x
         .iter()
         .zip(y.iter())
         .map(|(x, y)| <span class="kw-2">*</span>x * <span class="kw-2">*</span>y)
-        .fold(T::zero(), |acc, item| acc + item);
+        .fold(<span class="number">0.0</span>, |acc, item| acc + item.into());
 
     <span class="kw">let </span>b = (ss_xy - ss_x * ss_y / n) / (ss_xx - ss_x * ss_x / n);
     <span class="kw">let </span>a = (ss_y - b * ss_x) / n;
@@ -502,16 +521,17 @@ SOFTWARE.
 ///
 /// * Panics if the datasets `x` and `y` are of different lengths
 /// * If the datasets are empty
-</span><span class="kw">pub fn </span>root_mean_squared_error(x: <span class="kw-2">&amp;</span>[f64], y: <span class="kw-2">&amp;</span>[f64]) -&gt; f64 {
+</span><span class="kw">pub fn </span>root_mean_squared_error&lt;T: Numberish&gt;(x: <span class="kw-2">&amp;</span>[T], y: <span class="kw-2">&amp;</span>[T]) -&gt; f64 {
     <span class="macro">assert_eq!</span>(x.len(), y.len(), <span class="string">&quot;Calculating Root Mean Squared Error of two datasets of different length. x.len() = {}, y.len = {}&quot;</span>, x.len(), y.len());
     <span class="macro">assert_ne!</span>(
         x.len(),
         <span class="number">0</span>,
         <span class="string">&quot;Trying to calculate Root Mean Squared Error of empty datasets&quot;
     </span>);
-    <span class="kw">let </span>n = x.len() <span class="kw">as </span>f64;
-    <span class="kw">let </span>squared_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| (<span class="kw-2">*</span>y - <span class="kw-2">*</span>x).powi(<span class="number">2</span>)).sum();
-    (squared_error / n).sqrt()
+    <span class="kw">let </span>n : T = try_into_t(x.len());    
+
+    <span class="kw">let </span>squared_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| (<span class="kw-2">*</span>y - <span class="kw-2">*</span>x)<span class="kw-2">*</span>(<span class="kw-2">*</span>y - <span class="kw-2">*</span>x)).fold(<span class="number">0.0</span>, |acc, item| acc + item.into());
+    squared_error / n.into()
 }
 
 <span class="doccomment">/// Calculates the Mean Bias Error between to datasets, indicating whether
@@ -552,7 +572,7 @@ SOFTWARE.
 ///
 /// * Panics if the datasets `x` and `y` are of different lengths
 /// * If the datasets are empty
-</span><span class="kw">pub fn </span>mean_bias_error(x: <span class="kw-2">&amp;</span>[f64], y: <span class="kw-2">&amp;</span>[f64]) -&gt; f64 {
+</span><span class="kw">pub fn </span>mean_bias_error&lt;T: Numberish&gt;(x: <span class="kw-2">&amp;</span>[T], y: <span class="kw-2">&amp;</span>[T]) -&gt; f64 {
     <span class="macro">assert_eq!</span>(
         x.len(),
         y.len(),
@@ -566,8 +586,8 @@ SOFTWARE.
         <span class="string">&quot;Trying to calculate Mean Bias Error of empty datasets&quot;
     </span>);
 
-    <span class="kw">let </span>n = x.len() <span class="kw">as </span>f64;
-    <span class="kw">let </span>bias_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| <span class="kw-2">*</span>y - <span class="kw-2">*</span>x).sum();
+    <span class="kw">let </span>n : f64 = try_into_t(x.len());    
+    <span class="kw">let </span>bias_error: f64 = x.iter().zip(y.iter()).map(|(x, y)| <span class="kw-2">*</span>y - <span class="kw-2">*</span>x).fold(<span class="number">0.0</span>, |acc, item| acc + item.into());
     bias_error / n
 }
 </code></pre></div>

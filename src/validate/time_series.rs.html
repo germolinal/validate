@@ -184,6 +184,10 @@
 <a href="#150" id="150">150</a>
 <a href="#151" id="151">151</a>
 <a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -206,11 +210,13 @@ SOFTWARE.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::Validate;
 <span class="kw">use </span><span class="kw">crate</span>::ValidationResult;
+<span class="kw">use </span><span class="kw">crate</span>::numberish::Numberish;
+<span class="kw">use </span><span class="kw">crate</span>::stats::try_into_t;
 <span class="kw">use </span>poloto::prelude::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Validates a time series based on Mean Bias Error and Root Mean Squared Error
 </span><span class="attr">#[derive(Default, Clone)]
-</span><span class="kw">pub struct </span>SeriesValidator {
+</span><span class="kw">pub struct </span>SeriesValidator&lt;T: Numberish&gt; {
     <span class="doccomment">/// The maximum allowed Mean Bias Error
     </span><span class="kw">pub </span>allowed_mean_bias_error: <span class="prelude-ty">Option</span>&lt;f64&gt;,
 
@@ -233,19 +239,19 @@ SOFTWARE.
     </span><span class="kw">pub </span>expected_legend: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
 
     <span class="doccomment">/// The time series containing the expected values
-    </span><span class="kw">pub </span>expected: Vec&lt;f64&gt;,
+    </span><span class="kw">pub </span>expected: Vec&lt;T&gt;,
 
     <span class="doccomment">/// The name of the `found` time series
     </span><span class="kw">pub </span>found_legend: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
 
     <span class="doccomment">/// The time series containing the found values
-    </span><span class="kw">pub </span>found: Vec&lt;f64&gt;,
+    </span><span class="kw">pub </span>found: Vec&lt;T&gt;,
 
     <span class="doccomment">/// the title of the chart
     </span><span class="kw">pub </span>chart_title: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str&gt;,
 }
 
-<span class="kw">impl </span>Validate <span class="kw">for </span>SeriesValidator {
+<span class="kw">impl </span>&lt;T: Numberish&gt;Validate <span class="kw">for </span>SeriesValidator&lt;T&gt; {
     <span class="kw">fn </span>validate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ValidationResult {
         <span class="kw">let </span><span class="kw-2">mut </span>err_msg = String::new();
 
@@ -258,15 +264,17 @@ SOFTWARE.
             <span class="kw">return </span>ValidationResult::Err(err_msg.clone(), err_msg);
         }
 
-        <span class="kw">let </span>n = <span class="self">self</span>.expected.len() <span class="kw">as </span>f64;
+        
+        <span class="kw">let </span>n : T = try_into_t(<span class="self">self</span>.expected.len());
+
         <span class="kw">let </span>num = <span class="self">self</span>.expected.len();
 
-        <span class="kw">let </span>mean_bias_error: f64 = <span class="kw">crate</span>::stats::mean_bias_error(<span class="kw-2">&amp;</span><span class="self">self</span>.expected, <span class="kw-2">&amp;</span><span class="self">self</span>.found);
+        <span class="kw">let </span>mean_bias_error = <span class="kw">crate</span>::stats::mean_bias_error(<span class="kw-2">&amp;</span><span class="self">self</span>.expected, <span class="kw-2">&amp;</span><span class="self">self</span>.found);
         <span class="kw">let </span><span class="kw-2">mut </span>mbe_msg = <span class="macro">format!</span>(<span class="string">&quot; * Mean Bias Error: {:.2}&quot;</span>, mean_bias_error);
 
         <span class="comment">// Process Root Mean Squared Error
         </span><span class="kw">let </span>root_mean_squared_error =
-            <span class="kw">crate</span>::stats::root_mean_squared_error(<span class="kw-2">&amp;</span><span class="self">self</span>.expected, <span class="kw-2">&amp;</span><span class="self">self</span>.found);
+            <span class="kw">crate</span>::stats::root_mean_squared_error(<span class="kw-2">&amp;</span><span class="self">self</span>.expected, <span class="kw-2">&amp;</span><span class="self">self</span>.found);        
         <span class="kw">let </span><span class="kw-2">mut </span>rmse_msg = <span class="macro">format!</span>(<span class="string">&quot; * Root Mean Squared Error: {:.2}&quot;</span>, root_mean_squared_error);
 
         <span class="comment">// Check compliance
@@ -292,13 +300,13 @@ SOFTWARE.
         }
 
         <span class="kw">let </span>exp_legend = <span class="self">self</span>.expected_legend.unwrap_or(<span class="string">&quot;Expected&quot;</span>);
-        <span class="kw">let </span>line_expected = poloto::range_iter([<span class="number">0.0</span>, n], num)
-            .zip_output(|i| <span class="self">self</span>.expected[i <span class="kw">as </span>usize])
+        <span class="kw">let </span>line_expected = poloto::range_iter([<span class="number">0.0</span>, n.into()], num)
+            .zip_output(|i| <span class="self">self</span>.expected[i <span class="kw">as </span>usize].into())
             .buffered_plot()
             .line(exp_legend);
         <span class="kw">let </span>found_legend = <span class="self">self</span>.found_legend.unwrap_or(<span class="string">&quot;Found&quot;</span>);
-        <span class="kw">let </span>line_found = poloto::range_iter([<span class="number">0.0</span>, n], num)
-            .zip_output(|i| <span class="self">self</span>.found[i <span class="kw">as </span>usize])
+        <span class="kw">let </span>line_found = poloto::range_iter([<span class="number">0.0</span>, n.into()], num)
+            .zip_output(|i| <span class="self">self</span>.found[i <span class="kw">as </span>usize].into())
             .buffered_plot()
             .line(found_legend);
         <span class="kw">let </span>origin = poloto::build::origin();

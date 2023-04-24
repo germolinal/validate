@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["linear_coefficients","mean","mean_bias_error","min_max","root_mean_squared_error"]};
+window.SIDEBAR_ITEMS = {"fn":["linear_coefficients","mean","mean_bias_error","min_max","root_mean_squared_error","try_into_t"]};
