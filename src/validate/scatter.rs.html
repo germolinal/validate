@@ -312,6 +312,14 @@
 <a href="#278" id="278">278</a>
 <a href="#279" id="279">279</a>
 <a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -402,8 +410,10 @@ SOFTWARE.
             intersect, slope, r2
         );
 
+        <span class="kw">let </span><span class="kw-2">mut </span>nchecks = <span class="number">0</span>;
         <span class="comment">// Check compliance
         </span><span class="kw">if let </span><span class="prelude-val">Some</span>(allowed_r2) = <span class="self">self</span>.allowed_r2 {
+            nchecks +=<span class="number">1</span>;
             <span class="kw">if </span>r2 &lt; allowed_r2.into() {
                 err_msg = <span class="macro">format!</span>(
                     <span class="string">&quot;{}\n *  R2 is {:.4}, which is lower than the allowed value of {:.4}&quot;</span>,
@@ -414,6 +424,7 @@ SOFTWARE.
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(allowed_intersect_delta) = <span class="self">self</span>.allowed_intersect_delta {
+            nchecks +=<span class="number">1</span>;
             <span class="kw">let </span>expected_intersect: f64 = <span class="kw">match </span><span class="self">self</span>.expected_intersect {
                 <span class="prelude-val">Some</span>(v) =&gt; v.into(),
                 <span class="prelude-val">None </span>=&gt; <span class="number">0.0</span>,
@@ -432,6 +443,7 @@ SOFTWARE.
         }
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(allowed_slope_delta) = <span class="self">self</span>.allowed_slope_delta {
+            nchecks +=<span class="number">1</span>;
             <span class="kw">let </span>expected_slope: f64 = <span class="kw">match </span><span class="self">self</span>.expected_slope {
                 <span class="prelude-val">Some</span>(v) =&gt; v.into(),
                 <span class="prelude-val">None </span>=&gt; <span class="number">1.0</span>,
@@ -493,7 +505,11 @@ SOFTWARE.
             origin
         );
 
-        <span class="kw">let </span>show_err = <span class="kw">if </span>err_msg.is_empty() { <span class="string">&quot;None&quot; </span>} <span class="kw">else </span>{ <span class="kw-2">&amp;</span>err_msg };
+        <span class="kw">let </span>show_err = <span class="kw">if </span>nchecks == <span class="number">0 </span>{
+            <span class="string">&quot;No checks performed...&quot;
+        </span>}<span class="kw">else if </span>err_msg.is_empty() { 
+            <span class="string">&quot;No errors found&quot; 
+        </span>} <span class="kw">else </span>{ <span class="kw-2">&amp;</span>err_msg };
         <span class="kw">let </span>file = <span class="macro">format!</span>(
             <span class="string">&quot;{}\n#### Errors:\n {}\n\n#### Data:\n{}&quot;</span>,
             fit_msg,

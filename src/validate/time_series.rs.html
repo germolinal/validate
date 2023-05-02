@@ -273,6 +273,14 @@
 <a href="#239" id="239">239</a>
 <a href="#240" id="240">240</a>
 <a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
 </pre><pre class="rust"><code><span class="comment">/*
 MIT License
 Copyright (c) 2021 Germán Molina
@@ -355,21 +363,24 @@ SOFTWARE.
         <span class="kw">let </span>num = <span class="self">self</span>.expected.len();
 
         <span class="kw">let </span>mean_bias_error = <span class="kw">crate</span>::stats::mean_bias_error(<span class="kw-2">&amp;</span><span class="self">self</span>.expected, <span class="kw-2">&amp;</span><span class="self">self</span>.found);
-        file_msg = <span class="macro">format!</span>(<span class="string">&quot;{}\n * Mean Bias Error: {:.2}&quot;</span>, file_msg, mean_bias_error);
+        file_msg = <span class="macro">format!</span>(<span class="string">&quot;{}\n * Mean Bias Error: {:.4}&quot;</span>, file_msg, mean_bias_error);
 
         <span class="comment">// Process Root Mean Squared Error
         </span><span class="kw">let </span>root_mean_squared_error =
             <span class="kw">crate</span>::stats::root_mean_squared_error(<span class="kw-2">&amp;</span><span class="self">self</span>.expected, <span class="kw-2">&amp;</span><span class="self">self</span>.found);
         file_msg = <span class="macro">format!</span>(
-            <span class="string">&quot;{}\n * Root Mean Squared Error: {:.2}&quot;</span>,
+            <span class="string">&quot;{}\n * Root Mean Squared Error: {:.4}&quot;</span>,
             file_msg, root_mean_squared_error
         );
 
+        <span class="kw">let </span><span class="kw-2">mut </span>nchecks = <span class="number">0</span>;
+
         <span class="comment">// Check compliance
         </span><span class="kw">if let </span><span class="prelude-val">Some</span>(allowed_mean_bias_error) = <span class="self">self</span>.allowed_mean_bias_error {
+            nchecks += <span class="number">1</span>;
             <span class="kw">if </span>mean_bias_error.abs() &gt; allowed_mean_bias_error {
                 err_msg = <span class="macro">format!</span>(
-                    <span class="string">&quot;{} * Mean Bias Error is {}, which is greater than the allowed value of {}&quot;</span>,
+                    <span class="string">&quot;{} * Mean Bias Error is {:.4}, which is greater than the allowed value of {:.4}&quot;</span>,
                     err_msg,
                     mean_bias_error.abs(),
                     allowed_mean_bias_error
@@ -377,10 +388,11 @@ SOFTWARE.
             }
         }
         <span class="kw">if let </span><span class="prelude-val">Some</span>(allowed_root_mean_squared_error) = <span class="self">self</span>.allowed_root_mean_squared_error {
+            nchecks += <span class="number">1</span>;
             <span class="comment">// this is always positive... but just in case
             </span><span class="kw">if </span>root_mean_squared_error.abs() &gt; allowed_root_mean_squared_error {
                 err_msg = <span class="macro">format!</span>(
-                    <span class="string">&quot;{}\n * Mean Root Squared Error is {}, which is greater than the allowed value of {}&quot;</span>,
+                    <span class="string">&quot;{}\n * Mean Root Squared Error is {:.4}, which is greater than the allowed value of {:.4}&quot;</span>,
                     err_msg,  root_mean_squared_error, allowed_root_mean_squared_error
                 );                
             }
@@ -417,7 +429,11 @@ SOFTWARE.
             origin
         );
 
-        <span class="kw">let </span>show_err = <span class="kw">if </span>err_msg.is_empty() { <span class="string">&quot;None&quot; </span>} <span class="kw">else </span>{ <span class="kw-2">&amp;</span>err_msg };
+        <span class="kw">let </span>show_err = <span class="kw">if </span>nchecks == <span class="number">0 </span>{
+            <span class="string">&quot;No checks performed...&quot;
+        </span>}<span class="kw">else if </span>err_msg.is_empty() { 
+            <span class="string">&quot;No errors found&quot; 
+        </span>} <span class="kw">else </span>{ <span class="kw-2">&amp;</span>err_msg };
 
         <span class="kw">let </span>file = <span class="macro">format!</span>(
             <span class="string">&quot;{}\n#### Errors:\n {}\n#### Data:\n\n{}&quot;</span>,
@@ -442,7 +458,7 @@ SOFTWARE.
     </span><span class="kw">fn </span>test_series_perfect() {
         <span class="kw">use </span><span class="kw">crate</span>::Validator;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>validator = Validator::new(<span class="string">&quot;Scatter test&quot;</span>, <span class="string">&quot;./tests/series.html&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>validator = Validator::new(<span class="string">&quot;Time series test&quot;</span>, <span class="string">&quot;./tests/series.html&quot;</span>);
 
         <span class="kw">let </span>expected = <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>];
         <span class="kw">let </span>found = expected.clone();
@@ -472,7 +488,7 @@ SOFTWARE.
     </span><span class="kw">fn </span>test_series_perfect_fail() {
         <span class="kw">use </span><span class="kw">crate</span>::Validator;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>validator = Validator::new(<span class="string">&quot;Scatter test&quot;</span>, <span class="string">&quot;./tests/series.html&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>validator = Validator::new(<span class="string">&quot;Time series test&quot;</span>, <span class="string">&quot;./tests/series.html&quot;</span>);
 
         <span class="kw">let </span>expected = <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>];
         <span class="kw">let </span>found = expected.clone();
@@ -494,7 +510,7 @@ SOFTWARE.
     </span><span class="kw">fn </span>test_series_not_correlated_fail() {
         <span class="kw">use </span><span class="kw">crate</span>::Validator;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>validator = Validator::new(<span class="string">&quot;Scatter test&quot;</span>, <span class="string">&quot;./tests/series.html&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>validator = Validator::new(<span class="string">&quot;Time series test&quot;</span>, <span class="string">&quot;./tests/series.html&quot;</span>);
 
         <span class="kw">let </span>expected = <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>];
         <span class="kw">let </span>found = <span class="macro">vec!</span>[<span class="number">1.</span>, <span class="number">6.</span>, -<span class="number">1.</span>, <span class="number">4.</span>];
