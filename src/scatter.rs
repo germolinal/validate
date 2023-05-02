@@ -18,9 +18,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+use crate::numberish::Numberish;
 use crate::Validate;
 use crate::ValidationResult;
-use crate::numberish::Numberish;
 use poloto::prelude::*;
 
 /// Validates a time series based on Mean Bias Error and Root Mean Squared Error
@@ -43,9 +43,32 @@ pub struct ScatterValidator<T> {
 
     /// the title of the chart
     pub chart_title: Option<&'static str>,
+
+    /// The minimum allowed R2 for the regression coefficient.
+    pub allowed_r2: Option<T>,
+
+    /// The maximum allowd difference between the found intersect
+    /// and the expected one. Defaults to 0.05
+    pub allowed_intersect_delta: Option<T>,
+
+    /// The expected intersect to find in the regression coefficients    
+    ///
+    /// Defaults to 0.0. It is only checked if the `allowed_slope_delta`
+    /// is not None.
+    pub expected_intersect: Option<T>,
+
+    /// The maximum allowd difference between the found slope
+    /// and the expected one. Defaults to 0.05
+    pub allowed_slope_delta: Option<T>,
+
+    /// The expected slope to find in the regression coefficients    
+    ///
+    /// Defaults to 1.0. It is only checked if the `allowed_slope_delta`
+    /// is not None.
+    pub expected_slope: Option<T>,
 }
 
-impl <T: Numberish>Validate for ScatterValidator<T> {
+impl<T: Numberish> Validate for ScatterValidator<T> {
     fn validate(&self) -> ValidationResult {
         let mut err_msg = String::new();
 
@@ -58,7 +81,59 @@ impl <T: Numberish>Validate for ScatterValidator<T> {
             return ValidationResult::Err(err_msg.clone(), err_msg);
         }
 
-        let (a, b, r2) = crate::stats::linear_coefficients(self.expected.as_slice(), self.found.as_slice());
+        let (intersect, slope, r2) =
+            crate::stats::linear_coefficients(self.expected.as_slice(), self.found.as_slice());
+        let fit_msg = format!(
+            " * Fit: {:.4} + {:.4}x \n * R2 = {:.4}",
+            intersect, slope, r2
+        );
+
+        // Check compliance
+        if let Some(allowed_r2) = self.allowed_r2 {
+            if r2 < allowed_r2.into() {
+                err_msg = format!(
+                    "{}\n *  R2 is {:.4}, which is lower than the allowed value of {:.4}",
+                    err_msg, r2, allowed_r2
+                );
+                // err_msg = format!("{} \n **Failed!** {}",err_msg, err_msg)
+            }
+        }
+
+        if let Some(allowed_intersect_delta) = self.allowed_intersect_delta {
+            let expected_intersect: f64 = match self.expected_intersect {
+                Some(v) => v.into(),
+                None => 0.0,
+            };
+            let delta = (intersect - expected_intersect).abs();
+            if delta > allowed_intersect_delta.into() {
+                err_msg = format!(
+                    "{}\n *  Intersect is {:.4} when expecting {:.4}... difference ({:.4}) is higher than the allowed value of {:.4}",
+                    err_msg,
+                    intersect,
+                    expected_intersect,
+                    delta,
+                    allowed_intersect_delta
+                );
+            }
+        }
+
+        if let Some(allowed_slope_delta) = self.allowed_slope_delta {
+            let expected_slope: f64 = match self.expected_slope {
+                Some(v) => v.into(),
+                None => 1.0,
+            };
+            let delta = (slope - expected_slope).abs();
+            if delta > allowed_slope_delta.into() {
+                err_msg = format!(
+                    "{}\n *  Slope is {:.4} when expecting {:.4}... difference ({:.4}) is higher than the allowed value of {:.4}",
+                    err_msg,
+                    slope,
+                    expected_slope,
+                    delta,
+                    allowed_slope_delta
+                );
+            }
+        }
 
         let n = self.expected.len();
         let data = |i: usize| [self.expected[i].into(), self.found[i].into()];
@@ -70,9 +145,9 @@ impl <T: Numberish>Validate for ScatterValidator<T> {
         let (.., max_x) = crate::stats::min_max(&self.expected);
         let fit = |i: usize| {
             if i == 0 {
-                [0., a.into()]
+                [0., intersect.into()]
             } else if i == 1 {
-                [max_x.into(), (a + max_x.into() * b).into()]
+                [max_x.into(), (intersect + max_x.into() * slope).into()]
             } else {
                 unreachable!();
             }
@@ -104,11 +179,11 @@ impl <T: Numberish>Validate for ScatterValidator<T> {
             origin
         );
 
+        let show_err = if err_msg.is_empty() { "None" } else { &err_msg };
         let file = format!(
-            " * Fit: {:.3} + {:.3}x \n * R2 = {:.3}\n\n{}",
-            a,
-            b,
-            r2,
+            "{}\n#### Errors:\n {}\n\n#### Data:\n{}",
+            fit_msg,
+            show_err,
             poloto::disp(|w| p.simple_theme(w))
         );
 
@@ -117,5 +192,89 @@ impl <T: Numberish>Validate for ScatterValidator<T> {
         } else {
             ValidationResult::Ok(file)
         }
+    }
+}
+
+#[cfg(test)]
+mod testing {
+    use super::*;
+
+    #[test]
+    fn test_scatter_perfect() {
+        use crate::Validator;
+
+        let mut validator = Validator::new("Scatter test", "./tests/scatter.html");
+
+        let expected = vec![1., 2., 3., 4.];
+        let found = expected.clone();
+
+        let scatter = ScatterValidator {
+            expected: expected.clone(),
+            found: found.clone(),
+            ..Default::default()
+        };
+
+        validator.push(Box::new(scatter));
+
+        let scatter = ScatterValidator {
+            expected: expected.clone(),
+            found: found.clone(),
+            allowed_intersect_delta: Some(0.1),
+            allowed_slope_delta: Some(0.1),
+            allowed_r2: Some(1.0),
+            ..Default::default()
+        };
+
+        validator.push(Box::new(scatter));
+
+        validator.validate().unwrap()
+    }
+
+    #[test]
+    fn test_scatter_perfect_fail() {
+        use crate::Validator;
+
+        let mut validator = Validator::new("Scatter test", "./tests/scatter.html");
+
+        let expected = vec![1., 2., 3., 4.];
+        let found = expected.clone();
+
+        let scatter = ScatterValidator {
+            expected,
+            found,
+            allowed_intersect_delta: Some(0.1),
+            allowed_slope_delta: Some(-0.1),
+            allowed_r2: Some(1.2),
+            ..Default::default()
+        };
+
+        validator.push(Box::new(scatter));
+
+        assert!(validator.validate().is_err());
+    }
+
+    #[test]
+    fn test_scatter_not_correlated_fail() {
+        use crate::Validator;
+
+        let mut validator = Validator::new("Scatter test", "./tests/scatter.html");
+
+        let expected = vec![1., 2., 3., 4.];
+        let found = vec![1., 6., -1., 4.];
+
+        let scatter = ScatterValidator {
+            expected,
+            found,
+            expected_intersect: Some(3.9),
+            expected_slope: Some(13.9),
+            allowed_intersect_delta: Some(0.1),
+            allowed_slope_delta: Some(0.1),
+            allowed_r2: Some(0.82),
+            ..Default::default()
+        };
+
+        validator.push(Box::new(scatter));
+
+        assert!(validator.validate().is_err());
     }
 }

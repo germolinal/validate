@@ -268,6 +268,30 @@ impl ValidationResult {
             panic!("{}", err)
         }
     }
+
+    /// Checks if the result is an error
+    /// 
+    /// ```
+    /// use validate::ValidationResult;
+    /// 
+    /// assert!(ValidationResult::Err("a".into(), "b".into()).is_err());
+    /// assert!(!ValidationResult::Ok("a".into()).is_err());
+    /// ```
+    pub fn is_err(&self)->bool{
+        matches!(self, ValidationResult::Err(_, _))
+    }
+
+    /// Checks if the result is not an error
+    /// 
+    /// ```
+    /// use validate::ValidationResult;
+    /// 
+    /// assert!(!ValidationResult::Err("a".into(), "b".into()).is_ok());
+    /// assert!(ValidationResult::Ok("a".into()).is_ok());
+    /// ```
+    pub fn is_ok(&self)->bool{
+        !matches!(self, ValidationResult::Err(_, _))
+    }
 }
 
 /// This structure holds a number of validations to be ran, runs them,

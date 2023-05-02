@@ -100,7 +100,8 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
             }
         }
         if let Some(allowed_root_mean_squared_error) = self.allowed_root_mean_squared_error {
-            if root_mean_squared_error > allowed_root_mean_squared_error {
+            // this is always positive... but just in case
+            if root_mean_squared_error.abs() > allowed_root_mean_squared_error {
                 err_msg = format!(
                     "{}\n * Mean Root Squared Error is {}, which is greater than the allowed value of {}",
                     err_msg,  root_mean_squared_error, allowed_root_mean_squared_error
@@ -154,3 +155,5 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
         }
     }
 }
+
+
