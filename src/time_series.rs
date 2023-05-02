@@ -80,21 +80,24 @@ impl<T: Numberish> Validate for SeriesValidator<T> {
         let num = self.expected.len();
 
         let mean_bias_error = crate::stats::mean_bias_error(&self.expected, &self.found);
-        file_msg = format!("{}\n * Mean Bias Error: {:.2}", file_msg, mean_bias_error);
+        file_msg = format!("{}\n * Mean Bias Error: {:.4}", file_msg, mean_bias_error);
 
         // Process Root Mean Squared Error
         let root_mean_squared_error =
             crate::stats::root_mean_squared_error(&self.expected, &self.found);
         file_msg = format!(
-            "{}\n * Root Mean Squared Error: {:.2}",
+            "{}\n * Root Mean Squared Error: {:.4}",
             file_msg, root_mean_squared_error
         );
 
+        let mut nchecks = 0;
+
         // Check compliance
         if let Some(allowed_mean_bias_error) = self.allowed_mean_bias_error {
+            nchecks += 1;
             if mean_bias_error.abs() > allowed_mean_bias_error {
                 err_msg = format!(
-                    "{} * Mean Bias Error is {}, which is greater than the allowed value of {}",
+                    "{} * Mean Bias Error is {:.4}, which is greater than the allowed value of {:.4}",
                     err_msg,
                     mean_bias_error.abs(),
                     allowed_mean_bias_error
@@ -102,10 +105,11 @@ impl<T: Numberish> Validate for SeriesValidator<T> {
             }
         }
         if let Some(allowed_root_mean_squared_error) = self.allowed_root_mean_squared_error {
+            nchecks += 1;
             // this is always positive... but just in case
             if root_mean_squared_error.abs() > allowed_root_mean_squared_error {
                 err_msg = format!(
-                    "{}\n * Mean Root Squared Error is {}, which is greater than the allowed value of {}",
+                    "{}\n * Mean Root Squared Error is {:.4}, which is greater than the allowed value of {:.4}",
                     err_msg,  root_mean_squared_error, allowed_root_mean_squared_error
                 );                
             }
@@ -142,7 +146,11 @@ impl<T: Numberish> Validate for SeriesValidator<T> {
             origin
         );
 
-        let show_err = if err_msg.is_empty() { "None" } else { &err_msg };
+        let show_err = if nchecks == 0 {
+            "No checks performed..."
+        }else if err_msg.is_empty() { 
+            "No errors found" 
+        } else { &err_msg };
 
         let file = format!(
             "{}\n#### Errors:\n {}\n#### Data:\n\n{}",
@@ -167,7 +175,7 @@ mod testing {
     fn test_series_perfect() {
         use crate::Validator;
 
-        let mut validator = Validator::new("Scatter test", "./tests/series.html");
+        let mut validator = Validator::new("Time series test", "./tests/series.html");
 
         let expected = vec![1., 2., 3., 4.];
         let found = expected.clone();
@@ -197,7 +205,7 @@ mod testing {
     fn test_series_perfect_fail() {
         use crate::Validator;
 
-        let mut validator = Validator::new("Scatter test", "./tests/series.html");
+        let mut validator = Validator::new("Time series test", "./tests/series.html");
 
         let expected = vec![1., 2., 3., 4.];
         let found = expected.clone();
@@ -219,7 +227,7 @@ mod testing {
     fn test_series_not_correlated_fail() {
         use crate::Validator;
 
-        let mut validator = Validator::new("Scatter test", "./tests/series.html");
+        let mut validator = Validator::new("Time series test", "./tests/series.html");
 
         let expected = vec![1., 2., 3., 4.];
         let found = vec![1., 6., -1., 4.];
