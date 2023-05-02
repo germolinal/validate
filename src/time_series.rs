@@ -18,10 +18,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-use crate::Validate;
-use crate::ValidationResult;
 use crate::numberish::Numberish;
 use crate::stats::try_into_t;
+use crate::Validate;
+use crate::ValidationResult;
 use poloto::prelude::*;
 
 /// Validates a time series based on Mean Bias Error and Root Mean Squared Error
@@ -61,9 +61,10 @@ pub struct SeriesValidator<T: Numberish> {
     pub chart_title: Option<&'static str>,
 }
 
-impl <T: Numberish>Validate for SeriesValidator<T> {
+impl<T: Numberish> Validate for SeriesValidator<T> {
     fn validate(&self) -> ValidationResult {
         let mut err_msg = String::new();
+        let mut file_msg = String::new();
 
         if self.expected.len() != self.found.len() {
             err_msg = format!(
@@ -74,18 +75,20 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
             return ValidationResult::Err(err_msg.clone(), err_msg);
         }
 
-        
-         let n = try_into_t(self.expected.len());
+        let n = try_into_t(self.expected.len());
 
         let num = self.expected.len();
 
         let mean_bias_error = crate::stats::mean_bias_error(&self.expected, &self.found);
-        let mut mbe_msg = format!(" * Mean Bias Error: {:.2}", mean_bias_error);
+        file_msg = format!("{}\n * Mean Bias Error: {:.2}", file_msg, mean_bias_error);
 
         // Process Root Mean Squared Error
         let root_mean_squared_error =
-            crate::stats::root_mean_squared_error(&self.expected, &self.found);        
-        let mut rmse_msg = format!(" * Root Mean Squared Error: {:.2}", root_mean_squared_error);
+            crate::stats::root_mean_squared_error(&self.expected, &self.found);
+        file_msg = format!(
+            "{}\n * Root Mean Squared Error: {:.2}",
+            file_msg, root_mean_squared_error
+        );
 
         // Check compliance
         if let Some(allowed_mean_bias_error) = self.allowed_mean_bias_error {
@@ -96,7 +99,6 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
                     mean_bias_error.abs(),
                     allowed_mean_bias_error
                 );
-                mbe_msg = format!("{} | **Failed!**", mbe_msg)
             }
         }
         if let Some(allowed_root_mean_squared_error) = self.allowed_root_mean_squared_error {
@@ -105,8 +107,7 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
                 err_msg = format!(
                     "{}\n * Mean Root Squared Error is {}, which is greater than the allowed value of {}",
                     err_msg,  root_mean_squared_error, allowed_root_mean_squared_error
-                );
-                rmse_msg = format!("{} | **Failed!**", rmse_msg)
+                );                
             }
         }
 
@@ -141,10 +142,12 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
             origin
         );
 
+        let show_err = if err_msg.is_empty() { "None" } else { &err_msg };
+
         let file = format!(
-            "{}\n {}\n\n{}",
-            rmse_msg,
-            mbe_msg,
+            "{}\n#### Errors:\n {}\n#### Data:\n\n{}",
+            file_msg,
+            show_err,
             poloto::disp(|w| p.simple_theme(w))
         );
 
@@ -156,4 +159,83 @@ impl <T: Numberish>Validate for SeriesValidator<T> {
     }
 }
 
+#[cfg(test)]
+mod testing {
+    use super::*;
 
+    #[test]
+    fn test_series_perfect() {
+        use crate::Validator;
+
+        let mut validator = Validator::new("Scatter test", "./tests/series.html");
+
+        let expected = vec![1., 2., 3., 4.];
+        let found = expected.clone();
+
+        let scatter = SeriesValidator {
+            expected: expected.clone(),
+            found: found.clone(),
+            ..Default::default()
+        };
+
+        validator.push(Box::new(scatter));
+
+        let scatter = SeriesValidator {
+            expected: expected.clone(),
+            found: found.clone(),
+            allowed_mean_bias_error: Some(0.1),
+            allowed_root_mean_squared_error: Some(0.1),
+            ..Default::default()
+        };
+
+        validator.push(Box::new(scatter));
+
+        validator.validate().unwrap()
+    }
+
+    #[test]
+    fn test_series_perfect_fail() {
+        use crate::Validator;
+
+        let mut validator = Validator::new("Scatter test", "./tests/series.html");
+
+        let expected = vec![1., 2., 3., 4.];
+        let found = expected.clone();
+
+        let scatter = SeriesValidator {
+            expected,
+            found,
+            allowed_mean_bias_error: Some(0.1),
+            allowed_root_mean_squared_error: Some(-0.1),
+            ..Default::default()
+        };
+
+        validator.push(Box::new(scatter));
+
+        assert!(validator.validate().is_err());
+    }
+
+    #[test]
+    fn test_series_not_correlated_fail() {
+        use crate::Validator;
+
+        let mut validator = Validator::new("Scatter test", "./tests/series.html");
+
+        let expected = vec![1., 2., 3., 4.];
+        let found = vec![1., 6., -1., 4.];
+
+        let scatter = SeriesValidator {
+            expected,
+            found,
+
+            allowed_root_mean_squared_error: Some(0.1),
+            allowed_mean_bias_error: Some(0.1),
+
+            ..Default::default()
+        };
+
+        validator.push(Box::new(scatter));
+
+        assert!(validator.validate().is_err());
+    }
+}
