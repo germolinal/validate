@@ -169,7 +169,7 @@ impl<T: Numberish> Validate for ScatterValidator<T> {
             }
         };
         let exp_fit = range.map(exp_fit).buffered_plot().line("expected_fit");
-        let range = (0..n).map(|x| x);
+        let range = 0..n;
         let scatter = range.map(data).buffered_plot().scatter("some name");
 
         let chart_title = self.chart_title.unwrap_or("");
