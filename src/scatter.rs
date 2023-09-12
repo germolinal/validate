@@ -149,9 +149,9 @@ impl<T: Numberish> Validate for ScatterValidator<T> {
         let (.., max_x) = crate::stats::min_max(&self.expected);
         let fit = |i: usize| {
             if i == 0 {
-                [0., intersect.into()]
+                [0., intersect]
             } else if i == 1 {
-                [max_x.into(), (intersect + max_x.into() * slope).into()]
+                [max_x.into(), (intersect + max_x.into() * slope)]
             } else {
                 unreachable!();
             }
@@ -161,7 +161,7 @@ impl<T: Numberish> Validate for ScatterValidator<T> {
 
         let exp_fit = |i: usize| {
             if i == 0 {
-                [0.0.into(), 0.0.into()]
+                [0.0, 0.0]
             } else if i == 1 {
                 [max_x.into(), max_x.into()]
             } else {
@@ -169,7 +169,7 @@ impl<T: Numberish> Validate for ScatterValidator<T> {
             }
         };
         let exp_fit = range.map(exp_fit).buffered_plot().line("expected_fit");
-        let range = (0..n).map(|x| x as usize);
+        let range = (0..n).map(|x| x);
         let scatter = range.map(data).buffered_plot().scatter("some name");
 
         let chart_title = self.chart_title.unwrap_or("");
