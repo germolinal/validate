@@ -398,21 +398,30 @@ pub trait Validate {
 
 /// Reads a number of columns from a CSV, transforms them into f64
 pub fn from_csv<T : Numberish>(path: &str, cols: &[usize]) -> Vec<Vec<T>> {
-    let reader = File::open(path).unwrap();
+    let reader = File::open(path).unwrap();    
     let mut rdr = csv::Reader::from_reader(reader);
 
-    let mut ret: Vec<Vec<T>> = Vec::with_capacity(cols.len());
+    let mut ret: Vec<Vec<T>> = Vec::with_capacity(cols.len());    
     for _ in cols {
         ret.push(Vec::new());
     }
 
     for record in rdr.records() {
         let data = record.unwrap();
+        // dbg!(&data);
 
-        for (i, col) in cols.iter().enumerate() {
-            let v = data[*col].trim();
-            let v: T = v.parse::<f32>().unwrap().into();
-            ret[i].push(v);
+        for (i, col) in cols.iter().enumerate() {    
+            // dbg!(i,col);        
+            // dbg!(data.get(*col));
+            match data.get(*col){
+                Some(v)=>{
+                    // dbg!(v.to_string());
+                    let v = v.trim();
+                    let v: T = v.parse::<f32>().unwrap().into();
+                    ret[i].push(v);
+                },
+                None => continue//panic!("Index out of bounds: {}", *col)
+            }            
         }
     }
 
