@@ -20,7 +20,7 @@ SOFTWARE.
 
 use proc_macro::TokenStream;
 use proc_macro2::{Ident, TokenTree};
-use quote::quote_spanned;
+use quote::{quote, quote_spanned};
 use syn::{parse_macro_input, ItemFn};
 
 /// An Attribute MAcro
@@ -29,19 +29,48 @@ pub fn valid(title: TokenStream, item: TokenStream) -> TokenStream {
     let item2 = item.clone();
     let item_ast = parse_macro_input!(item2 as ItemFn);
     let item = proc_macro2::TokenStream::from(item);
-    let title = title.to_string();
+    let title = title.to_string().replace("\"", "");
     let v = &item_ast.attrs;
     let docs = get_docs(v);
     let span = proc_macro2::Span::call_site();
     let function_name = find_name(item.clone());
+    
+    let result_type = get_output_type(&item_ast.sig.output);
+    let returns_result = format!("{}", result_type).starts_with("Result");
+
+    let ret_statement = if returns_result {
+        quote!(Ok(Box::new(wrapper)))
+    }else{
+        quote!(Box::new(wrapper))
+    };
+
+
+
+    let wrapper_result_type = if returns_result {
+        quote!(#result_type)
+    }else{
+        quote!(Result<#result_type, String>)
+    };
+
+    // Function is all right
+    let item = if returns_result {
+        quote!(#item)
+    }else{
+        // function needs to return a Result
+        quote!( fn #function_name()->#wrapper_result_type {
+            #item
+
+            Ok(#function_name())
+        } )
+    };
 
     let output = quote_spanned!(span =>
 
-        fn #function_name ()-> Box<dyn Validate + 'static> {
+        fn #function_name ()-> #result_type {
 
             #item
 
-            let t : fn()->Box<dyn Validate + 'static> = #function_name;
+            let t : fn() -> #wrapper_result_type = #function_name;
 
             let wrapper = validate::ValidatorWrapper{
                 title: #title .to_string(),
@@ -49,11 +78,21 @@ pub fn valid(title: TokenStream, item: TokenStream) -> TokenStream {
                 val: t
             };
 
-            Box::new(wrapper)
+            #ret_statement
         }
     );
     output.into()
 }
+
+
+/// Get the output type of a function based on its return type
+fn get_output_type(ret: &syn::ReturnType) -> proc_macro2::TokenStream {
+    match ret {
+        syn::ReturnType::Default => quote!(()),
+        syn::ReturnType::Type(_, ty) => quote!(#ty),
+    }
+}
+
 
 fn get_docs(attrs: &[syn::Attribute]) -> String {
     let mut ret = String::new();

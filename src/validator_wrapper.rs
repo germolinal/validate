@@ -20,7 +20,11 @@ SOFTWARE.
 
 use crate::{Validate, ValidationResult};
 
-type ValidationFn = fn() -> Box<dyn Validate + 'static>;
+/// The type that represents the output of a valid 
+/// validation function
+pub type ValidFunc = Box<dyn Validate + 'static>;
+
+type ValidationFn = fn() -> Result<ValidFunc, String>;
 
 /// A wrapper that contains an object that implements [`Validate`]
 pub struct ValidatorWrapper {
@@ -48,7 +52,12 @@ impl Validate for ValidatorWrapper {
     /// Validates a Wrapper
     fn validate(&self) -> ValidationResult {
         let v = &self.val;
-        match v().validate() {
+        let validator = match v() {
+            Ok(v) => v,
+            Err(e) => return ValidationResult::Err(e.clone(), e),
+        };
+
+        match validator.validate() {
             ValidationResult::Ok(txt) => {
                 let ret = self.format_description(txt);
                 ValidationResult::Ok(ret)
@@ -67,8 +76,8 @@ mod tests {
     use crate::SeriesValidator;
 
     #[test]
-    fn test_wrapper() {
-        fn aux() -> Box<dyn Validate> {
+    fn test_wrapper() -> Result<(), String> {
+        fn aux() -> Result<Box<dyn Validate>, String> {
             let expected = vec![1., 2., 3.];
             let found = vec![5., 6., 6.];
 
@@ -80,10 +89,10 @@ mod tests {
                 found,
                 ..SeriesValidator::default()
             };
-            Box::new(v)
+            Ok(Box::new(v))
         }
 
-        let t: ValidationFn = aux;
+        let t = aux;
 
         let wrapper = ValidatorWrapper {
             title: "Some Title".into(),
@@ -98,6 +107,8 @@ mod tests {
             ValidationResult::Err(_, err) => {
                 panic!("{}", err)
             }
-        }
+        };
+
+        Ok(())
     }
 }

@@ -70,7 +70,7 @@ SOFTWARE.
 //! /// Some explanation about the validation
 //! ///
 //! /// It is always important to know what is it that we are validating
-//! #[valid(Some Validation)]
+//! #[valid("Some Validation")]
 //! fn check_if_equal()->Box<dyn Validate>{
 //!     let v = CustomValidator{
 //!         expected: 2,
@@ -244,17 +244,27 @@ macro_rules! assert_not_close {
     };
 }
 
+/// The type that represents the output of a valid
+/// validation function
+pub use crate::validator_wrapper::ValidFunc;
+
 /// Implements a validation error, where
 /// `Ok` returns just the text to write in the report,
 /// but `Err` returns not only that but also an error message
 pub enum ValidationResult {
-    /// Returns an error; meaning that returns that it returns
-    /// something to write in the report and also an error message
-    /// (in that order)
+    /// Returns an error, containing
+    /// something to write in the report (1st param) and also an error message
+    /// to show in the terminal (2nd param)    
     Err(String, String),
 
     /// Returns a message to write on the report
     Ok(String),
+}
+
+impl std::convert::From<String> for ValidationResult {
+    fn from(value: String) -> Self {
+        Self::Err(value.clone(), value.clone())
+    }
 }
 
 impl ValidationResult {
@@ -270,26 +280,26 @@ impl ValidationResult {
     }
 
     /// Checks if the result is an error
-    /// 
+    ///
     /// ```
     /// use validate::ValidationResult;
-    /// 
+    ///
     /// assert!(ValidationResult::Err("a".into(), "b".into()).is_err());
     /// assert!(!ValidationResult::Ok("a".into()).is_err());
     /// ```
-    pub fn is_err(&self)->bool{
+    pub fn is_err(&self) -> bool {
         matches!(self, ValidationResult::Err(_, _))
     }
 
     /// Checks if the result is not an error
-    /// 
+    ///
     /// ```
     /// use validate::ValidationResult;
-    /// 
+    ///
     /// assert!(!ValidationResult::Err("a".into(), "b".into()).is_ok());
     /// assert!(ValidationResult::Ok("a".into()).is_ok());
     /// ```
-    pub fn is_ok(&self)->bool{
+    pub fn is_ok(&self) -> bool {
         !matches!(self, ValidationResult::Err(_, _))
     }
 }
@@ -397,11 +407,11 @@ pub trait Validate {
 }
 
 /// Reads a number of columns from a CSV, transforms them into f64
-pub fn from_csv<T : Numberish>(path: &str, cols: &[usize]) -> Vec<Vec<T>> {
-    let reader = File::open(path).unwrap();    
+pub fn from_csv<T: Numberish>(path: &str, cols: &[usize]) -> Vec<Vec<T>> {
+    let reader = File::open(path).unwrap();
     let mut rdr = csv::Reader::from_reader(reader);
 
-    let mut ret: Vec<Vec<T>> = Vec::with_capacity(cols.len());    
+    let mut ret: Vec<Vec<T>> = Vec::with_capacity(cols.len());
     for _ in cols {
         ret.push(Vec::new());
     }
@@ -410,18 +420,18 @@ pub fn from_csv<T : Numberish>(path: &str, cols: &[usize]) -> Vec<Vec<T>> {
         let data = record.unwrap();
         // dbg!(&data);
 
-        for (i, col) in cols.iter().enumerate() {    
-            // dbg!(i,col);        
+        for (i, col) in cols.iter().enumerate() {
+            // dbg!(i,col);
             // dbg!(data.get(*col));
-            match data.get(*col){
-                Some(v)=>{
+            match data.get(*col) {
+                Some(v) => {
                     // dbg!(v.to_string());
                     let v = v.trim();
                     let v: T = v.parse::<f32>().unwrap().into();
                     ret[i].push(v);
-                },
-                None => continue//panic!("Index out of bounds: {}", *col)
-            }            
+                }
+                None => continue, //panic!("Index out of bounds: {}", *col)
+            }
         }
     }
 

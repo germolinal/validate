@@ -1,5 +1,4 @@
-
-use validate::{valid, Validate, ValidationResult, Validator};
+use validate::{valid, Validate, ValidationResult, Validator, ValidFunc};
 
 // This checks that two numbers are equal
 struct CustomValidator {
@@ -41,8 +40,8 @@ impl Validate for CustomValidator {
 /// Some explanation about the validation
 ///
 /// It is always important to know what is it that we are validating
-#[valid(Some Validation)]
-fn check_if_equal() -> Box<dyn Validate> {
+#[valid("Some Validation")]
+fn check_if_equal() -> ValidFunc {
     let v = CustomValidator {
         expected: 2,
         found: 2,
@@ -52,7 +51,7 @@ fn check_if_equal() -> Box<dyn Validate> {
 }
 
 #[test]
-fn test_custon_validator() {
+fn test_custom_validator() {
     let mut validator = Validator::new("Test Validation", "report.html");
     validator.push(check_if_equal());
     validator.validate().unwrap()
