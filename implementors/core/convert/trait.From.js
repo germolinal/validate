@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"validate":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.72.0/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;<a class=\"struct\" href=\"https://doc.rust-lang.org/1.72.0/alloc/string/struct.String.html\" title=\"struct alloc::string::String\">String</a>&gt; for <a class=\"enum\" href=\"validate/enum.ValidationResult.html\" title=\"enum validate::ValidationResult\">ValidationResult</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

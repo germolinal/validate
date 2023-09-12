@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["ValidatorWrapper"],"type":["ValidationFn"]};
+window.SIDEBAR_ITEMS = {"struct":["ValidatorWrapper"],"type":["ValidFunc","ValidationFn"]};
